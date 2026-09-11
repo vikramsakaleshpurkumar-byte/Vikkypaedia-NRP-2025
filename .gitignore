@@ -1,0 +1,6 @@
+# build/test scratch
+*.png
+*.pdf
+node_modules/
+__pycache__/
+.DS_Store

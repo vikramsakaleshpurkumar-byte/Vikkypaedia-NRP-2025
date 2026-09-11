@@ -1,0 +1,111 @@
+# Neonatal Resuscitation 2025
+
+**A mastery-based, self-paced, offline-first module on resuscitation and stabilisation of the newborn infant at birth.**
+
+Live: https://vikramsakaleshpurkumar-byte.github.io/Vikkypaedia-NRP-2025/
+
+Written to the **2025 AHA/AAP neonatal resuscitation guidelines** (Lee HC, Szyld E, et al. *Part 5: Neonatal Resuscitation.* Pediatrics 2025; doi:10.1542/peds.2025-074352) and the **ILCOR 2025 Consensus on Science with Treatment Recommendations**.
+
+---
+
+## What it is
+
+One self-contained HTML file. No framework, no CDN, no network request, no account, no server. It works on a phone in aeroplane mode, and it will still work in five years when whatever platform you were considering has shut down.
+
+- **24 units in 5 Parts**, ~30 notional hours
+- **48 checkpoint items** + **30 fresh integrative items** for the final assessment
+- **Mastery-gated**: Parts unlock in sequence; there is no "mark as read" control anywhere
+- **Spaced retrieval** at 1 → 3 → 7 → 21 → 60 days, interleaved across units
+- **Tiered hints** before every answer — a nudge, then a structured hint
+- **Three-criterion certification**: coverage + retention + applied performance
+- **Dual-track clinical content**: *ideal setting* and *resource-constrained setting* as equals
+- **India lens** in every clinical unit
+- Certificate as PNG and print-to-PDF
+
+## Who it is for
+
+| Audience | Track | Suggested scope |
+|---|---|---|
+| Staff nurses, ANMs, midwives, interns | ESSENTIALS | Parts A–C, Must-know filter on |
+| MBBS doctors, PG residents (Paediatrics, OBG, Anaesthesia, EM) | ADVANCED | Parts A–D, all tiers |
+| Paediatricians, neonatologists, faculty | EXPERT | All 24 units + Appendices A–G |
+
+Three tracks live in one file. The toolbar switches between them; the placement questions set a sensible default.
+
+## What makes it different from a MOOC
+
+1. **Mastery, not completion.** A unit is mastered when both its checkpoint items are *currently* answered correctly. Fail one later and the unit loses its mastered status — which is what makes the coverage criterion mean something at the moment of certification.
+2. **Certification on three independent criteria**, because a single score is not a defensible basis for a high-stakes decision about a clinician.
+3. **Retention counts breadth across units**, not raw items — a raw count can be satisfied entirely from the units met earliest.
+4. **Rationales explain why the wrong options are wrong**, and distractors are errors clinicians actually make.
+5. **Emergency dosing is never gated.** Appendices E and F are open from the first minute.
+6. **It publishes its own weaknesses** (Appendix G).
+
+## Structure
+
+- **Part A · Foundations and preparation** (Units 1–4) — epidemiology, transition physiology, the algorithm, anticipating the birth
+- **Part B · The first sixty seconds** (5–9) — cord management, thermal care, initial steps and meconium, heart rate, oxygen and CPAP
+- **Part C · Ventilation, the core skill** (10–14) — indications and settings, devices, mask technique, MR SOPA, alternative airways
+- **Part D · When ventilation is not enough** (15–18) — compressions, vascular access, medications, knowing when to stop
+- **Part E · Special populations, systems and futures** (19–24) — preterm, post-resuscitation care, special circumstances, CHD, outside the delivery room and NICU, teams and QI
+- **Appendices A–G** — assessment bank, simulation library, faculty guide, curriculum mapping, drug annex, references, design evidence
+
+## Certification
+
+Three criteria, all required:
+
+1. **Coverage** — all 48 checkpoint items currently correct
+2. **Retention** — ≥18 of 24 units evidenced by an item answered correctly ≥24 h after first pass
+3. **Applied performance** — 50 items sampled from 78, randomised, closed book, 75 minutes, 2 attempts, 24-hour lock, **cut score 90%**
+
+> **The cut score is provisional.** Published comparisons of standard-setting methods applied to the *same* assessment have produced cuts from roughly 66% to 86%, which means the method can matter more than the candidates. Appendix C provides modified Angoff, Ebel and Hofstee worksheets and borderline-regression guidance. Do the standard setting before using this for any consequential decision.
+
+## For learners
+
+1. Open the file. Answer the three placement questions.
+2. Work through Part A. Both checkpoints per unit, answered cold.
+3. Use the hints when stuck — a hinted item still counts, it simply returns sooner.
+4. Answer the retention checks when they appear at the top of the page. That spacing is the point.
+5. When all three criteria are met, generate your certificate.
+
+**To keep it on your phone:** download the file and open it from your Downloads folder, or use "Add to Home Screen" in your browser. It never needs the internet again. Your progress lives in that browser on that device only.
+
+## For faculty adopting it
+
+1. Open **Final assessment → Faculty settings**. Set signatory, cut score, item count, time limit, attempts, retention bar.
+2. Click **Export a configured copy**.
+3. Rename the download to `index.html`, upload to your repository, enable GitHub Pages.
+
+**Two traps that catch everyone:**
+- Uploading the *unconfigured* file, so the certificate carries no signatory.
+- Embedding a full-resolution photograph. Base64 adds about a third to file size; resize to roughly 400×400 first.
+
+See **Appendix C** for three delivery models, a worked flipped-classroom session plan, feedback structures, the six-domain rubric, standard-setting worksheets and a Kirkpatrick evaluation plan. See **Appendix B** for four branching simulation scenarios that run on a doll and printed vital-sign cards.
+
+## Privacy
+
+All state lives in the learner's browser under one versioned `localStorage` key. No account, no server, no analytics, no telemetry. Nothing is transmitted anywhere. The Digital Personal Data Protection Act 2023 is satisfied by collecting nothing at all. One-click irreversible erase is provided.
+
+## Known limitations
+
+Published in full in **Appendix G**. In summary: fixed spaced-retrieval intervals rather than fitted forgetting curves; thin item sampling (two items per unit); rule-based placement rather than adaptive testing; limited form-to-form equivalence; unproctored assessment; a verification code that is re-derivable rather than tamper-proof; a provisional cut score; Kirkpatrick levels 3 and 4 unmeasured; accessibility targeted at WCAG 2.2 AA but not independently audited; clinical content not externally peer reviewed; single-author tiering judgements.
+
+## Independence and trademark
+
+This is an **original educational work**. It is not the Neonatal Resuscitation Program®, is not affiliated with, endorsed by, or derived from the text of the AAP *Textbook of Neonatal Resuscitation*, and completing it confers **no NRP® provider status or eCard**. NRP® is a registered trademark of the American Academy of Pediatrics and is used here only to identify that programme, not to describe this one. No AAP or AHA text, figures, tables or marks are reproduced.
+
+## Contributing
+
+Clinical corrections are welcome and expected. See `CONTRIBUTING.md`. Corrections with a primary source take priority over everything else in the queue.
+
+## Licence
+
+CC BY-NC-SA 4.0, **excluding** the *Vikkypaedia* name, the name and likeness of Dr Vikram Sakaleshpur Kumar, and the certificate signature block. See `LICENSE.md`.
+
+## How to cite
+
+> Sakaleshpur Kumar V. *Neonatal Resuscitation 2025: an evidence-governed, competency-based digital module for resource-constrained settings.* Vikkypaedia; 2026. Available from: https://vikramsakaleshpurkumar-byte.github.io/Vikkypaedia-NRP-2025/
+
+## Disclaimer
+
+Education, not a protocol, and not certification to practise. Verify every dose, threshold and device setting against your institution's current protocol and the manufacturer's instructions before use in a patient. Neonatal resuscitation guidance changes on roughly a five-year cycle — if you are reading this more than three years after the build date in the footer, assume something is out of date and check.
