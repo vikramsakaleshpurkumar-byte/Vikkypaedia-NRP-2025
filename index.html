@@ -445,6 +445,105 @@ sup{font-size:.68em;line-height:0;vertical-align:.45em}
   white-space:nowrap;
 }
 
+/* ============================================================
+   ONBOARDING / FIRST RUN
+   ============================================================ */
+.onb{
+  position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
+  background:rgba(4,10,18,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  padding:16px;animation:fade .2s ease;overflow-y:auto;
+}
+.onb-panel{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);
+  box-shadow:var(--sh-3);width:min(660px,100%);max-height:calc(100vh - 32px);
+  display:flex;flex-direction:column;overflow:hidden;animation:rise .26s cubic-bezier(.4,0,.2,1);
+}
+@keyframes rise{from{transform:translateY(14px) scale(.985);opacity:0}to{transform:none;opacity:1}}
+.onb-head{
+  display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line);
+  background:
+    radial-gradient(500px 160px at 0% 0%, var(--brand-soft) 0%, transparent 70%),
+    var(--surface);
+}
+.onb-dots{display:flex;gap:6px;flex:1}
+.onb-dots i{
+  height:4px;flex:1;border-radius:99px;background:var(--surface-3);
+  transition:background .25s ease;
+}
+.onb-dots i[data-on="1"]{background:var(--brand)}
+.onb-skip{
+  background:none;border:0;color:var(--ink-3);font-size:.8rem;cursor:pointer;
+  padding:.3em .5em;border-radius:7px;font-weight:600;
+}
+.onb-skip:hover{background:var(--surface-2);color:var(--ink)}
+.onb-body{padding:24px 24px 6px;overflow-y:auto;flex:1;min-height:0}
+.onb-step{animation:unfold .24s ease}
+.onb-step h2{font-size:1.5rem;letter-spacing:-.03em;margin:0 0 .35em}
+.onb-step > p{color:var(--ink-2)}
+.onb-kicker{
+  font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);
+  font-weight:800;margin-bottom:.55em;
+}
+.onb-foot{
+  display:flex;gap:10px;justify-content:space-between;align-items:center;
+  padding:14px 20px;border-top:1px solid var(--line);background:var(--surface-2);
+}
+.onb-foot .grow{flex:1}
+.onb-list{list-style:none;padding:0;margin:1.1em 0 0}
+.onb-list li{
+  display:flex;gap:.8em;align-items:flex-start;margin:.7em 0;font-size:.94rem;color:var(--ink-2);
+}
+.onb-list li b{color:var(--ink)}
+.onb-list .n{
+  flex:0 0 auto;width:24px;height:24px;border-radius:8px;background:var(--brand-soft);
+  color:var(--brand-ink);font-weight:800;font-size:.76rem;display:grid;place-items:center;margin-top:.1em;
+}
+:root[data-theme="dark"] .onb-list .n{color:var(--brand)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .onb-list .n{color:var(--brand)}}
+.onb-note{
+  font-size:.83rem;color:var(--ink-3);background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--radius);padding:.7em .9em;margin:1.1em 0 0;
+}
+.onb .place-q > p{font-size:.96rem}
+.onb .card{border:0;box-shadow:none;padding:0;margin:0;background:none}
+.onb .card > h2{display:none}
+
+.plan-grid{display:grid;gap:10px;margin:1.1em 0 0}
+@media (min-width:560px){.plan-grid{grid-template-columns:1fr 1fr}}
+.plan-tile{
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:.8em .95em;
+}
+.plan-tile .pv{font-size:1.16rem;font-weight:800;letter-spacing:-.025em;display:block;line-height:1.3}
+.plan-tile .pl{font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:800}
+.plan-controls{display:flex;flex-wrap:wrap;gap:14px;margin-top:1.1em;align-items:flex-end}
+.plan-controls > div{min-width:10.5rem}
+.plan-controls label{display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:800;margin-bottom:.3em}
+.plan-controls select{
+  padding:.5em .6em;border-radius:9px;border:1px solid var(--line-2);background:var(--surface);
+  color:var(--ink);font:inherit;font-size:.88rem;min-height:40px;
+}
+
+/* ---------- profile bar ---------- */
+.profile-bar{
+  display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:12px 16px;margin:0 0 18px;box-shadow:var(--sh-1);
+}
+.pb-id{display:flex;gap:11px;align-items:center;min-width:0}
+.pb-id > .pb-avatar{
+  flex:0 0 auto;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+  background-color:var(--brand);background-image:linear-gradient(145deg,var(--brand),var(--brand-600));
+  color:var(--btn-ink);font-weight:800;font-size:.9rem;letter-spacing:.01em;line-height:1;
+}
+.pb-id > div{min-width:0}
+.pb-id > div > b{display:block;font-size:.96rem;letter-spacing:-.015em;line-height:1.3}
+.pb-id > div > span{display:block;font-size:.78rem;color:var(--ink-3)}
+.pb-plan{
+  font-size:.79rem;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line);
+  border-radius:999px;padding:.3em .8em;
+}
+.profile-bar .grow{flex:1}
+
 /* ---------- generic card ---------- */
 .card{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);
@@ -955,6 +1054,135 @@ footer a{color:var(--brand)}
   <div class="topline"><i></i></div>
 </div>
 
+<!-- first-run onboarding -->
+<div class="onb noprint" id="onb" role="dialog" aria-modal="true" aria-labelledby="onbTitle" hidden>
+  <div class="onb-panel">
+    <div class="onb-head">
+      <div class="onb-dots" id="onbDots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <button type="button" class="onb-skip" id="onbSkip">Skip for now</button>
+    </div>
+
+    <div class="onb-body">
+
+      <section class="onb-step" data-step="1" hidden>
+        <p class="onb-kicker">Vikkypaedia &middot; Neonatal Resuscitation 2025</p>
+        <h2 id="onbTitle">Before you start</h2>
+        <p>Four short steps. It takes about a minute, and it decides how the next thirty hours are shaped for you.</p>
+        <ul class="onb-list">
+          <li><span class="n">1</span><div><b>Mastery, not completion.</b> There is no &ldquo;mark as read&rdquo; button anywhere. A unit is mastered when both its checkpoint questions are currently correct &mdash; and it can be lost again.</div></li>
+          <li><span class="n">2</span><div><b>Parts unlock in order.</b> Part&nbsp;B opens when every unit in Part&nbsp;A is mastered. Part&nbsp;A is open now.</div></li>
+          <li><span class="n">3</span><div><b>Hints before answers.</b> Stuck? Take a nudge, then a structured hint. Using one still counts &mdash; the item simply comes back sooner.</div></li>
+          <li><span class="n">4</span><div><b>Spaced retrieval.</b> Passed items return at 1, 3, 7, 21 and 60 days. That is what turns a pass into knowledge you still have at 3&nbsp;a.m.</div></li>
+        </ul>
+        <div class="onb-note"><b>Clinical safety.</b> This is education, not a protocol and not certification to practise. It is an original work aligned to the 2025 AHA/AAP guidelines and ILCOR 2025 CoSTR &mdash; it is <b>not</b> the Neonatal Resuscitation Program&reg; and confers no NRP&reg; provider status. Verify every dose and setting against your institution&rsquo;s protocol. The drug annex and references are never locked.</div>
+      </section>
+
+      <section class="onb-step" data-step="2" hidden>
+        <p class="onb-kicker">Step 2 of 4</p>
+        <h2>Who is taking this?</h2>
+        <p>Used to personalise your certificate and your completion record. It stays in this browser.</p>
+        <div class="fset">
+          <div>
+            <label for="enName">Full name, as you want it printed</label>
+            <input type="text" id="enName" placeholder="e.g. Dr Ananya Raghavan" autocomplete="name">
+          </div>
+          <div>
+            <label for="enInst">Institution or hospital <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
+            <input type="text" id="enInst" placeholder="e.g. District Hospital, Hassan" autocomplete="organization">
+          </div>
+          <div>
+            <label for="enReg">Registration or employee number <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
+            <input type="text" id="enReg" placeholder="e.g. KMC 123456">
+          </div>
+          <div>
+            <label for="enEmail">Email <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
+            <input type="email" id="enEmail" placeholder="you@example.com" autocomplete="email">
+          </div>
+        </div>
+        <p class="onb-note" id="enErr" hidden style="border-color:var(--red);color:var(--red);background:var(--red-soft)"></p>
+        <div class="onb-note"><b>Nothing leaves this device.</b> There is no account and no server: these details are written to this browser&rsquo;s local storage only, so they can be printed on your certificate and included in a completion record you choose to export and send. Nothing is transmitted, and you can erase all of it with one click at the bottom of the final assessment. The Digital Personal Data Protection Act 2023 is satisfied here by collecting nothing centrally at all.</div>
+      </section>
+
+      <section class="onb-step" data-step="3" hidden>
+        <p class="onb-kicker">Step 3 of 4</p>
+<section class="card noprint" id="placementCard" aria-labelledby="placeH">
+      <h2 id="placeH">Where should I start?</h2>
+      <p class="dash-status">Three questions. This sets your default depth and clinical track. It never unlocks Parts for you &mdash; everyone demonstrates mastery, experienced clinicians simply do it faster by answering checkpoints cold.</p>
+
+      <div class="place-q" data-pq="role">
+        <p>1. What is your role?</p>
+        <div class="place-opts">
+          <button type="button" data-v="e" aria-pressed="false">Nurse, ANM, midwife or intern</button>
+          <button type="button" data-v="a" aria-pressed="false">MBBS doctor or PG resident</button>
+          <button type="button" data-v="x" aria-pressed="false">Paediatrician, neonatologist or faculty</button>
+        </div>
+      </div>
+
+      <div class="place-q" data-pq="setting">
+        <p>2. Where do you attend births?</p>
+        <div class="place-opts">
+          <button type="button" data-v="ideal" aria-pressed="false">Level II/III unit &mdash; blender, T-piece, monitor available</button>
+          <button type="button" data-v="rc" aria-pressed="false">District hospital, CHC/PHC or home births</button>
+          <button type="button" data-v="both" aria-pressed="false">Both / I teach across settings</button>
+        </div>
+      </div>
+
+      <div class="place-q" data-pq="exp">
+        <p>3. How often have you personally given positive-pressure ventilation to a newborn?</p>
+        <div class="place-opts">
+          <button type="button" data-v="none" aria-pressed="false">Never, or only on a mannequin</button>
+          <button type="button" data-v="some" aria-pressed="false">A few times</button>
+          <button type="button" data-v="many" aria-pressed="false">Routinely</button>
+        </div>
+      </div>
+
+      <div class="place-result" id="placeResult" hidden></div>
+    </section>
+      </section>
+
+      <section class="onb-step" data-step="4" hidden>
+        <p class="onb-kicker">Step 4 of 4</p>
+        <h2>Your study plan</h2>
+        <div id="onbPath" class="place-result"></div>
+        <div class="plan-grid">
+          <div class="plan-tile"><span class="pl">Your scope</span><span class="pv" id="planScope">&mdash;</span></div>
+          <div class="plan-tile"><span class="pl">Notional time</span><span class="pv" id="planHours">&mdash;</span></div>
+          <div class="plan-tile"><span class="pl">Finishes in</span><span class="pv" id="planWeeks">&mdash;</span></div>
+          <div class="plan-tile"><span class="pl">Target date</span><span class="pv" id="planDate">&mdash;</span></div>
+        </div>
+        <div class="plan-controls">
+          <div>
+            <label for="planMins">Minutes per sitting</label>
+            <select id="planMins">
+              <option value="30">30</option>
+              <option value="45" selected>45</option>
+              <option value="60">60</option>
+              <option value="90">90</option>
+            </select>
+          </div>
+          <div>
+            <label for="planDays">Days per week</label>
+            <select id="planDays">
+              <option value="3">3</option>
+              <option value="4" selected>4</option>
+              <option value="5">5</option>
+              <option value="7">7</option>
+            </select>
+          </div>
+        </div>
+        <div class="onb-note">A plan is a nudge, not a lock. Nothing expires, nothing is graded on time, and the target date only ever appears on your own dashboard.</div>
+      </section>
+
+    </div>
+
+    <div class="onb-foot">
+      <button type="button" class="btn ghost" id="onbBack" hidden>Back</button>
+      <span class="grow"></span>
+      <button type="button" class="btn" id="onbNext">Continue</button>
+    </div>
+  </div>
+</div>
+
 <div class="drawer noprint" id="drawer" data-open="0">
   <div class="drawer-panel">
     <button class="iconbtn close" id="drawerClose" aria-label="Close contents">&#10005;&nbsp; Close</button>
@@ -1014,6 +1242,17 @@ footer a{color:var(--brand)}
       <div class="arc-step" data-p="E"><b>Future directions</b><span>what is still unknown</span></div>
     </div>
 
+    <!-- profile bar (after first run) -->
+    <div class="profile-bar noprint" id="profileBar" hidden>
+      <div class="pb-id">
+        <span class="pb-avatar" id="pbInitials" aria-hidden="true"></span>
+        <div><b id="pbName"></b><span id="pbMeta"></span></div>
+      </div>
+      <span class="grow"></span>
+      <span class="pb-plan" id="pbPlan"></span>
+      <button class="btn ghost sm" id="pbEdit">Edit my details</button>
+    </div>
+
     <!-- mastery dashboard -->
     <section class="card noprint" id="dashboard" aria-labelledby="dashH">
       <div class="dash-head">
@@ -1048,40 +1287,7 @@ footer a{color:var(--brand)}
       <div id="retSlot"></div>
     </section>
 
-    <!-- adaptive placement -->
-    <section class="card noprint" id="placementCard" aria-labelledby="placeH">
-      <h2 id="placeH">Where should I start?</h2>
-      <p class="dash-status">Three questions. This sets your default depth and clinical track. It never unlocks Parts for you &mdash; everyone demonstrates mastery, experienced clinicians simply do it faster by answering checkpoints cold.</p>
 
-      <div class="place-q" data-pq="role">
-        <p>1. What is your role?</p>
-        <div class="place-opts">
-          <button type="button" data-v="e" aria-pressed="false">Nurse, ANM, midwife or intern</button>
-          <button type="button" data-v="a" aria-pressed="false">MBBS doctor or PG resident</button>
-          <button type="button" data-v="x" aria-pressed="false">Paediatrician, neonatologist or faculty</button>
-        </div>
-      </div>
-
-      <div class="place-q" data-pq="setting">
-        <p>2. Where do you attend births?</p>
-        <div class="place-opts">
-          <button type="button" data-v="ideal" aria-pressed="false">Level II/III unit &mdash; blender, T-piece, monitor available</button>
-          <button type="button" data-v="rc" aria-pressed="false">District hospital, CHC/PHC or home births</button>
-          <button type="button" data-v="both" aria-pressed="false">Both / I teach across settings</button>
-        </div>
-      </div>
-
-      <div class="place-q" data-pq="exp">
-        <p>3. How often have you personally given positive-pressure ventilation to a newborn?</p>
-        <div class="place-opts">
-          <button type="button" data-v="none" aria-pressed="false">Never, or only on a mannequin</button>
-          <button type="button" data-v="some" aria-pressed="false">A few times</button>
-          <button type="button" data-v="many" aria-pressed="false">Routinely</button>
-        </div>
-      </div>
-
-      <div class="place-result" id="placeResult" hidden></div>
-    </section>
 
     <!-- toolbar -->
     <div class="toolbar noprint" role="region" aria-label="Display controls">
@@ -5450,7 +5656,9 @@ footer a{color:var(--brand)}
       <button class="btn" id="makeCert">Generate certificate</button>
       <button class="btn ghost" id="dlCert">Download PNG</button>
       <button class="btn ghost" id="printCert">Print / save as PDF</button>
+      <button class="btn ghost" id="dlRecord">Download completion record</button>
     </div>
+    <p class="dash-status" style="margin-top:.6em">The <b>completion record</b> is a small JSON file holding your details, your three criteria and the verification code. Send it to your faculty; they can open it in <code>verify.html</code> alongside this module to read it back and check the figures have not been altered in transit. It is <b>self-attested</b> &mdash; generated on your own device &mdash; so treat it as a signed statement from you, not as proof issued by a third party.</p>
     <div class="cert-preview" id="certWrap" hidden style="margin-top:1em">
       <canvas id="certCanvas" width="2400" height="1697" aria-label="Certificate preview"></canvas>
     </div>
@@ -6426,7 +6634,7 @@ I("X30", 14,
 "use strict";
 
 /* ------------------------------------------------------------------ config */
-var VERSION   = "1.1.0";
+var VERSION   = "1.2.0";
 var BUILD     = "2026-09-11";
 var STORE_KEY = "vkp.nrp2025.v1";
 var DAY       = 86400000;
@@ -6486,7 +6694,7 @@ var memFallback = null;
 function blank(){
   return { v:1, items:{}, prefs:{ pri:"all", lvl:"x", set:"both", fs:"m", theme:"system" },
            placement:null, lastUnit:null, exam:{ attempts:[], lockUntil:0 },
-           settings:null, started:null };
+           settings:null, started:null, profile:null, plan:null, onboarded:false };
 }
 var S = blank();
 
@@ -7003,6 +7211,250 @@ function placementResult(){
   box.innerHTML = "<b>Your path.</b> Depth set to <b>" + lv + "</b>. " + tr + "<br><br>" + path;
 }
 
+/* ------------------------------------------------------------------ enrolment, plan, onboarding */
+function fnv(str){
+  var h = 2166136261;
+  for (var i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  var s = (h >>> 0).toString(36).toUpperCase();
+  while (s.length < 7) s = "0" + s;
+  return s;
+}
+function certReady(){
+  return checkpointsOK() === totalItems() &&
+         retainedUnits() >= cfg("retainUnits") &&
+         bestScore() >= cfg("cut");
+}
+function initialsOf(name){
+  var parts = String(name||"").trim().split(/\s+/).filter(function(w){
+    return !/^(dr|prof|mr|mrs|ms|miss)\.?$/i.test(w); });
+  if (!parts.length) return "?";
+  var a = parts[0].charAt(0), b = parts.length > 1 ? parts[parts.length-1].charAt(0) : "";
+  return (a + b).toUpperCase();
+}
+var TRACKS = { e:"Essentials", a:"Advanced", x:"Expert" };
+var SCOPES = {
+  e:{ label:"Parts A–C · 14 units", hours:12 },
+  a:{ label:"Parts A–D · 18 units", hours:20 },
+  x:{ label:"All 24 units + appendices", hours:30 }
+};
+function computePlan(mins, days){
+  var p = S.placement || {};
+  var sc = SCOPES[p.role] || SCOPES.x;
+  var f = p.exp === "many" ? 0.7 : (p.exp === "some" ? 0.85 : 1);
+  var hours = Math.round(sc.hours * f);
+  mins = mins || 45; days = days || 4;
+  var weeks = Math.max(1, Math.ceil((hours * 60) / (mins * days * 1)) );
+  var target = now() + weeks * 7 * DAY;
+  return { scope: sc.label, hours: hours, mins: mins, days: days, weeks: weeks, target: target };
+}
+function fmtDate(ms){
+  try { return new Date(ms).toLocaleDateString(undefined, { day:"numeric", month:"short", year:"numeric" }); }
+  catch(e){ return new Date(ms).toDateString(); }
+}
+function renderPlan(){
+  var mins = parseInt(($("#planMins")||{}).value, 10) || 45;
+  var days = parseInt(($("#planDays")||{}).value, 10) || 4;
+  var pl = computePlan(mins, days);
+  var set = function(id, v){ var n = $(id); if (n) n.textContent = v; };
+  set("#planScope", pl.scope);
+  set("#planHours", "≈" + pl.hours + " h");
+  set("#planWeeks", "≈" + pl.weeks + (pl.weeks === 1 ? " week" : " weeks"));
+  set("#planDate", fmtDate(pl.target));
+  var path = $("#placeResult"), host = $("#onbPath");
+  if (host) host.innerHTML = (path && !path.hidden) ? path.innerHTML
+    : "<b>Your path.</b> No placement answers yet, so the module opens at full depth with both clinical tracks shown. You can change that any time in the display controls.";
+  return pl;
+}
+
+/* ---- profile bar ---- */
+function renderProfileBar(){
+  var bar = $("#profileBar"); if (!bar) return;
+  if (!S.onboarded){ bar.hidden = true; return; }
+  bar.hidden = false;
+  var pr = S.profile, ed = $("#pbEdit");
+  if (!pr || !pr.name){
+    $("#pbInitials").textContent = "–";
+    $("#pbName").textContent = "Anonymous learner";
+    $("#pbMeta").textContent = "No details saved on this device";
+    if (ed) ed.textContent = "Add my details";
+  } else {
+    $("#pbInitials").textContent = initialsOf(pr.name);
+    $("#pbName").textContent = pr.name;
+    var bits = [];
+    if (S.placement && TRACKS[S.placement.role]) bits.push(TRACKS[S.placement.role] + " track");
+    if (pr.institution) bits.push(pr.institution);
+    bits.push("enrolled " + fmtDate(pr.enrolledAt || S.started || now()));
+    $("#pbMeta").textContent = bits.join(" · ");
+    if (ed) ed.textContent = "Edit my details";
+  }
+  var pp = $("#pbPlan");
+  if (pp){
+    if (S.plan && S.plan.target){
+      var left = Math.ceil((S.plan.target - now()) / DAY);
+      pp.hidden = false;
+      pp.textContent = left > 0
+        ? ("Target " + fmtDate(S.plan.target) + " · " + left + (left === 1 ? " day left" : " days left"))
+        : ("Target date passed · " + fmtDate(S.plan.target));
+    } else { pp.hidden = true; }
+  }
+  var cn = $("#certName");
+  if (cn && !cn.value && S.profile && S.profile.name) cn.value = S.profile.name;
+}
+
+/* ---- onboarding flow ---- */
+var ONB = { step:1, last:4 };
+function onbShow(n){
+  ONB.step = clamp(n, 1, ONB.last);
+  $$(".onb-step").forEach(function(sec){
+    sec.hidden = parseInt(sec.getAttribute("data-step"), 10) !== ONB.step;
+  });
+  $$("#onbDots i").forEach(function(d, i){ d.setAttribute("data-on", i < ONB.step ? "1" : "0"); });
+  var back = $("#onbBack"), next = $("#onbNext");
+  back.hidden = ONB.step === 1;
+  next.textContent = ONB.step === ONB.last ? "Start Unit 1" : "Continue";
+  var e2 = $("#enErr"); if (e2) e2.hidden = true;
+  if (ONB.step === 4) renderPlan();
+  var panel = $(".onb-body"); if (panel) panel.scrollTop = 0;
+  var focus = ONB.step === 2 ? $("#enName") : next;
+  if (focus) try{ focus.focus(); }catch(e){}
+}
+function openOnboarding(step){
+  var o = $("#onb"); if (!o) return;
+  var pr = S.profile || {};
+  var set = function(id, v){ var n = $(id); if (n) n.value = v || ""; };
+  set("#enName", pr.name); set("#enInst", pr.institution);
+  set("#enReg", pr.reg);   set("#enEmail", pr.email);
+  if (S.plan){
+    var m = $("#planMins"), d = $("#planDays");
+    if (m) m.value = String(S.plan.mins || 45);
+    if (d) d.value = String(S.plan.days || 4);
+  }
+  o.hidden = false;
+  document.body.style.overflow = "hidden";
+  onbShow(step || 1);
+}
+function closeOnboarding(){
+  var o = $("#onb"); if (o) o.hidden = true;
+  document.body.style.overflow = "";
+  renderProfileBar();
+}
+function readEnrol(){
+  var v = function(id){ var n = $(id); return n ? n.value.trim() : ""; };
+  return { name:v("#enName"), institution:v("#enInst"), reg:v("#enReg"), email:v("#enEmail") };
+}
+function saveEnrol(){
+  var e = readEnrol();
+  if (!e.name) return false;
+  e.enrolledAt = (S.profile && S.profile.enrolledAt) || now();
+  S.profile = e;
+  save();
+  return true;
+}
+function finishOnboarding(){
+  S.plan = renderPlan();
+  S.onboarded = true;
+  save();
+  closeOnboarding();
+  refresh();
+  var n = ORDER.filter(function(u){ return !isLocked(u) && !unitMastered(u); })[0];
+  if (n == null) n = ORDER.filter(function(u){ return !isLocked(u); })[0];
+  if (n != null) goUnit(n);
+}
+function wireOnboarding(){
+  var o = $("#onb"); if (!o) return;
+  $("#onbNext").addEventListener("click", function(){
+    if (ONB.step === 2){
+      if (!saveEnrol()){
+        var err = $("#enErr");
+        if (err){ err.hidden = false; err.textContent = "A name is needed — it is what goes on the certificate. Use “Skip for now” if you would rather not give one."; }
+        var n = $("#enName"); if (n) n.focus();
+        return;
+      }
+    }
+    if (ONB.step === 3){
+      var p = S.placement || {};
+      if (!p.role || !p.setting || !p.exp){
+        var box = $("#placeResult");
+        if (box){ box.hidden = false;
+          box.innerHTML = "<b>Three taps needed.</b> Answer all three so the module can set your depth, your clinical track and your pace. Use “Skip for now” if you would rather decide later."; }
+        return;
+      }
+    }
+    if (ONB.step === ONB.last){ finishOnboarding(); return; }
+    onbShow(ONB.step + 1);
+  });
+  $("#onbBack").addEventListener("click", function(){ onbShow(ONB.step - 1); });
+  $("#onbSkip").addEventListener("click", function(){
+    if (ONB.step >= 2) saveEnrol();
+    S.onboarded = true; save(); closeOnboarding(); refresh();
+  });
+  ["#planMins","#planDays"].forEach(function(sel){
+    var n = $(sel); if (n) n.addEventListener("change", renderPlan);
+  });
+  var ed = $("#pbEdit");
+  if (ed) ed.addEventListener("click", function(){ openOnboarding(2); });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && !$("#onb").hidden){
+      S.onboarded = true; save(); closeOnboarding(); refresh();
+    }
+  });
+}
+
+/* ---- completion record ---- */
+function recordBasis(r){
+  return ["vkp-cr1", r.module.id, r.module.version, r.learner.name, r.learner.institution,
+          r.enrolledAt, r.issuedAt, r.result.unitsMastered, r.result.checkpointsCorrect,
+          r.result.retentionUnits, r.result.bestScore, r.result.cutScore,
+          r.result.certified ? 1 : 0, r.verificationCode].join("|");
+}
+function completionRecord(){
+  var pr = S.profile || {}, pl = S.placement || {};
+  var r = {
+    format: "vikkypaedia-completion-record",
+    formatVersion: 1,
+    module: { id:"nrp2025", title: cfg("courseTitle"), version: VERSION, build: BUILD },
+    learner: {
+      name: pr.name || "",
+      institution: pr.institution || "",
+      registration: pr.reg || "",
+      email: pr.email || "",
+      track: TRACKS[pl.role] || "",
+      setting: pl.setting || ""
+    },
+    enrolledAt: pr.enrolledAt || S.started || 0,
+    issuedAt: now(),
+    result: {
+      unitsMastered: masteredCount(),
+      unitsTotal: ORDER.length,
+      checkpointsCorrect: checkpointsOK(),
+      checkpointsTotal: totalItems(),
+      retentionUnits: retainedUnits(),
+      retentionRequired: cfg("retainUnits"),
+      longestRetention: fmtSpan(longestRetention()),
+      bestScore: bestScore(),
+      cutScore: cfg("cut"),
+      attempts: (S.exam.attempts || []).length,
+      certified: certReady()
+    },
+    signatory: { name: cfg("signName"), role: cfg("signRole") },
+    verificationCode: verifyCode(),
+    attestation: "Self-attested. Generated on the learner's own device from local progress data. Re-derivable, not tamper-proof: treat it as a signed statement by the learner, not as proof issued by a third party.",
+    notNRP: "Not the Neonatal Resuscitation Program (NRP is a registered trademark of the American Academy of Pediatrics). Confers no provider status, eCard, licence or clinical privilege."
+  };
+  r.checksum = fnv(recordBasis(r));
+  return r;
+}
+function downloadRecord(){
+  var r = completionRecord();
+  var name = (r.learner.name || "learner").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  var blob = new Blob([JSON.stringify(r, null, 2)], {type:"application/json"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "nrp2025-completion-record-" + (name || "learner") + ".json";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+}
+
 /* ------------------------------------------------------------------ exam */
 var EXAM = null;
 
@@ -7379,6 +7831,17 @@ function exportConfigured(){
   $$(".place-opts button", doc).forEach(function(b){ b.setAttribute("aria-pressed","false"); });
   var cw = $("#certWrap", doc); if (cw) cw.setAttribute("hidden","");
   var cg = $("#certGate", doc); if (cg) cg.setAttribute("hidden","");
+  // the exported copy must start as a fresh enrolment for whoever opens it
+  var ob = $("#onb", doc); if (ob) ob.setAttribute("hidden","");
+  $$("#onb input", doc).forEach(function(i){ i.removeAttribute("value"); });
+  var pb = $("#profileBar", doc);
+  if (pb){ pb.setAttribute("hidden","");
+    ["#pbInitials","#pbName","#pbMeta","#pbPlan"].forEach(function(sel){
+      var n = $(sel, doc); if (n) n.textContent = ""; }); }
+  ["#planScope","#planHours","#planWeeks","#planDate"].forEach(function(sel){
+    var n = $(sel, doc); if (n) n.innerHTML = "&mdash;"; });
+  var op = $("#onbPath", doc); if (op) op.innerHTML = "";
+  var ce = $("#certName", doc); if (ce) ce.removeAttribute("value");
 
   // seed faculty settings into the exported copy
   var seed = doc.ownerDocument.createElement("script");
@@ -7430,6 +7893,7 @@ function refresh(){
     renderTOC();
     renderRetention();
     renderCriteria();
+    renderProfileBar();
   }, 30);
 }
 
@@ -7463,6 +7927,7 @@ function boot(){
   wirePrefs();
   wirePlacement();
   wireFaculty();
+  wireOnboarding();
   injectTableLabels();
 
   var dOpen = $("#drawerOpen"); if (dOpen) dOpen.addEventListener("click", openDrawer);
@@ -7495,6 +7960,7 @@ function boot(){
     document.body.appendChild(a); a.click(); a.remove();
   });
   var pc = $("#printCert"); if (pc) pc.addEventListener("click", function(){ drawCert(); setTimeout(function(){ window.print(); }, 120); });
+  var dr = $("#dlRecord"); if (dr) dr.addEventListener("click", downloadRecord);
 
   var vs = $("#verStamp");
   if (vs) vs.textContent = "Module version " + VERSION + " · built " + BUILD +
@@ -7508,6 +7974,9 @@ function boot(){
 
   refresh();
   setInterval(function(){ renderRetention(); renderDashboard(); }, 60000);
+
+  renderProfileBar();
+  if (!S.onboarded) openOnboarding(1);
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

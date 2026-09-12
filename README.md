@@ -60,9 +60,19 @@ Three criteria, all required:
 
 > **The cut score is provisional.** Published comparisons of standard-setting methods applied to the *same* assessment have produced cuts from roughly 66% to 86%, which means the method can matter more than the candidates. Appendix C provides modified Angoff, Ebel and Hofstee worksheets and borderline-regression guidance. Do the standard setting before using this for any consequential decision.
 
+## Enrolment and completion records
+
+On first open the module runs a short four-step enrolment: what it is and how it works, your name and institution, the three placement questions, and a study plan with a target date you set by choosing minutes per sitting and days per week. It can be skipped, and edited later from the profile bar above the dashboard.
+
+**Everything stays on the device.** There is no account and no server; the details are written to the same `localStorage` key as your progress, so they can be printed on the certificate and included in a record you choose to export.
+
+Once all three criteria are met, **Download completion record** produces a small JSON file holding the learner's details, the three criteria, the verification code and a checksum. Faculty open it in `verify.html` — a second offline page in this repository — which reads it back in plain language and recomputes the checksum.
+
+> **A completion record is self-attested.** It is produced on the learner's own device, and the checksum is a plain hash computed by code that ships inside the module, so anyone holding the file can recompute it. A match tells you the record has not been casually altered, mistyped or truncated in transit. It does **not** prove the learner sat the assessment, and it is not evidence issued by a third party. Records you can rely on for promotion, credentialling or audit need a server-side system with authenticated sign-in, which this deliberately is not.
+
 ## For learners
 
-1. Open the file. Answer the three placement questions.
+1. Open the file. Complete the four-step enrolment (or skip it).
 2. Work through Part A. Both checkpoints per unit, answered cold.
 3. Use the hints when stuck — a hinted item still counts, it simply returns sooner.
 4. Answer the retention checks when they appear at the top of the page. That spacing is the point.
@@ -74,7 +84,7 @@ Three criteria, all required:
 
 1. Open **Final assessment → Faculty settings**. Set signatory, cut score, item count, time limit, attempts, retention bar.
 2. Click **Export a configured copy**.
-3. Rename the download to `index.html`, upload to your repository, enable GitHub Pages.
+3. Rename the download to `index.html`, upload to your repository, enable GitHub Pages. Upload `verify.html` alongside it if you want to read learners' completion records.
 
 **Two traps that catch everyone:**
 - Uploading the *unconfigured* file, so the certificate carries no signatory.
@@ -84,11 +94,11 @@ See **Appendix C** for three delivery models, a worked flipped-classroom session
 
 ## Privacy
 
-All state lives in the learner's browser under one versioned `localStorage` key. No account, no server, no analytics, no telemetry. Nothing is transmitted anywhere. The Digital Personal Data Protection Act 2023 is satisfied by collecting nothing at all. One-click irreversible erase is provided.
+All state lives in the learner's browser under one versioned `localStorage` key — progress, preferences, and the enrolment details if any were given. No account, no server, no analytics, no telemetry. Nothing is transmitted anywhere, and a completion record leaves the device only when the learner exports it and sends it themselves. The Digital Personal Data Protection Act 2023 is satisfied by collecting nothing centrally at all. One-click irreversible erase is provided.
 
 ## Known limitations
 
-Published in full in **Appendix G**. In summary: fixed spaced-retrieval intervals rather than fitted forgetting curves; thin item sampling (two items per unit); rule-based placement rather than adaptive testing; limited form-to-form equivalence; unproctored assessment; a verification code that is re-derivable rather than tamper-proof; a provisional cut score; Kirkpatrick levels 3 and 4 unmeasured; accessibility targeted at WCAG 2.2 AA but not independently audited; clinical content not externally peer reviewed; single-author tiering judgements.
+Published in full in **Appendix G**. In summary: fixed spaced-retrieval intervals rather than fitted forgetting curves; thin item sampling (two items per unit); rule-based placement rather than adaptive testing; limited form-to-form equivalence; unproctored assessment; a verification code and completion-record checksum that are re-derivable rather than tamper-proof, making records self-attested; a provisional cut score; Kirkpatrick levels 3 and 4 unmeasured; accessibility targeted at WCAG 2.2 AA but not independently audited; clinical content not externally peer reviewed; single-author tiering judgements.
 
 ## Independence and trademark
 
