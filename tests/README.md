@@ -31,12 +31,20 @@ Each prints `OK` / `FAIL` per check and ends with `FAILURES: none` when the buil
 | `test_enrol.py` | The four-step first run and its required fields, plan recomputation, the profile bar and its persistence, Edit and Escape, the completion-record download and contents, and `verify.html` accepting a genuine record, rejecting a tampered score and surviving malformed JSON |
 | `contrast.py` | Computed foreground/background ratio on every text element that matters, in light **and** dark. Everything must read `ok` (≥4.5:1) |
 | `offline_test.py` | Zero non-`file://` requests on load, on opening a unit and on switching theme |
+| `test_sig.py` | The faculty signature upload: downscaling to 600 px, matting the paper out to transparency while keeping the ink, the preview and its stored size, the image drawn on the certificate canvas and into the print sheet, removal, and an exported copy that carries the signature in its seed without duplicating it in the DOM |
 | `print_test.py` | The certificate renders and the printed PDF is exactly one A4 page |
 
-## Two things that will bite you
+## Three things that will bite you
 
 **Seed `onboarded` before loading.** The first-run overlay is modal and blocks every click.
 Each suite already does this with `ctx.add_init_script(SKIP_ONB)`; any new test must too.
 
 **Use `reduced_motion="reduce"` for screenshots.** Smooth scrolling otherwise produces
 half-painted captures that look like layout bugs and are not.
+
+**Never write `localStorage` and reload in one breath.** Chromium commits `file://` local
+storage asynchronously, so a reload issued straight after a write can start the next document
+before the write has landed — the page then boots from an empty store and the test fails
+perhaps one run in six. Use the `seed_and_reload` helper, which writes, lets it settle,
+reloads, checks the state actually took, and retries. This is a browser behaviour, not a
+defect in the module: the module reads what is there and behaves correctly either way.

@@ -16,6 +16,24 @@ def check(name, cond, extra=""):
     print(("  OK   " if cond else "  FAIL ")+name+((" :: "+str(extra)) if extra and not cond else ""))
     if not cond: fails.append(name)
 
+
+def seed_and_reload(page, mutate_js, expect_js, tries=4, settle=350, after=1000):
+    """Write state, then reload and confirm it survived.
+
+    Chromium commits file:// localStorage asynchronously: a reload issued
+    immediately after a write can start the next document before the write
+    lands, and the page then boots from an empty store. Write, let it settle,
+    reload, and verify -- retrying rather than assuming.
+    """
+    for _ in range(tries):
+        page.evaluate(mutate_js)
+        page.wait_for_timeout(settle)
+        page.reload()
+        page.wait_for_timeout(after)
+        if page.evaluate(expect_js):
+            return True
+    raise AssertionError("state did not survive the reload after %d attempts" % tries)
+
 with sync_playwright() as pw:
     b = pw.chromium.launch()
     ctx = b.new_context(viewport={"width":1280,"height":1000}, accept_downloads=True)
@@ -46,9 +64,11 @@ with sync_playwright() as pw:
     check("dashboard 4/24", "4 of 24" in p.evaluate("()=>document.querySelector('#dashLeft').textContent"))
 
     print("\n== 2. MASTERY REVERSAL ==")
-    p.evaluate("""()=>{const s=JSON.parse(localStorage.getItem('vkp.nrp2025.v1'));
-        s.items['1.1'].ok=false; s.items['1.1'].box=0; localStorage.setItem('vkp.nrp2025.v1',JSON.stringify(s));}""")
-    p.reload(); p.wait_for_timeout(700)
+    seed_and_reload(p,
+      """()=>{const s=JSON.parse(localStorage.getItem('vkp.nrp2025.v1'));
+        s.items['1.1'].ok=false; s.items['1.1'].box=0;
+        localStorage.setItem('vkp.nrp2025.v1',JSON.stringify(s));}""",
+      "()=>document.querySelector('#u5').getAttribute('data-locked')==='1'")
     check("losing an item re-locks Part B", p.evaluate("()=>document.querySelector('#u5').getAttribute('data-locked')==='1'"))
 
     print("\n== 3. FILTERS ==")
@@ -73,12 +93,14 @@ with sync_playwright() as pw:
 
     print("\n== 5. EXAM ENGINE ==")
     # force full coverage + retention so the criteria panel is meaningful
-    p.evaluate("""()=>{const K='vkp.nrp2025.v1';const s=JSON.parse(localStorage.getItem(K));
-      const past=Date.now()-3*86400000;
-      Object.keys(s.items).forEach(id=>{s.items[id]={box:3,due:Date.now()+7*86400000,ok:true,
-        firstPass:past,longest:2*86400000,retained:true,hint:0,tries:2};});
-      localStorage.setItem(K,JSON.stringify(s));}""")
-    p.reload(); p.wait_for_timeout(800)
+    seed_and_reload(p,
+      """()=>{const K='vkp.nrp2025.v1';const s=JSON.parse(localStorage.getItem(K));
+        const past=Date.now()-3*86400000; s.items=s.items||{};
+        document.querySelectorAll('.q').forEach(q=>{s.items[q.getAttribute('data-q')]=
+          {box:3,due:Date.now()+7*86400000,ok:true,firstPass:past,longest:2*86400000,
+           retained:true,hint:0,tries:2};});
+        localStorage.setItem(K,JSON.stringify(s));}""",
+      "()=>[...document.querySelectorAll('.crit')].every(c=>c.getAttribute('data-met')==='1'||c.querySelector('.cval').textContent==='\u2014')")
     crit = p.evaluate("()=>[...document.querySelectorAll('.crit')].map(c=>({met:c.getAttribute('data-met'),v:c.querySelector('.cval').textContent}))")
     print("   criteria:", json.dumps(crit))
     check("coverage criterion met", crit[0]['met']=='1' and crit[0]['v']=='48/48')
@@ -118,10 +140,11 @@ with sync_playwright() as pw:
     check("item review renders rationales", p.evaluate("()=>document.querySelectorAll('#examRunner .rationale').length>=40"))
 
     print("\n== 6. CERTIFICATE ==")
-    p.evaluate("""()=>{const K='vkp.nrp2025.v1';const s=JSON.parse(localStorage.getItem(K));
-      s.exam.attempts=[{at:Date.now(),n:50,right:48,pct:96}]; s.exam.lockUntil=0;
-      localStorage.setItem(K,JSON.stringify(s));}""")
-    p.reload(); p.wait_for_timeout(800)
+    seed_and_reload(p,
+      """()=>{const K='vkp.nrp2025.v1';const s=JSON.parse(localStorage.getItem(K));
+        s.exam.attempts=[{at:Date.now(),n:50,right:48,pct:96}]; s.exam.lockUntil=0;
+        localStorage.setItem(K,JSON.stringify(s));}""",
+      "()=>!document.querySelector('#certGate').hidden")
     check("cert gate opens when all 3 criteria met", p.evaluate("()=>!document.querySelector('#certGate').hidden"))
     check("not-ready card hidden", p.evaluate("()=>document.querySelector('#certNotReady').hidden"))
     p.fill('#certName','Dr Ananya Raghavan')

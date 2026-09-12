@@ -82,19 +82,30 @@ Once all three criteria are met, **Download completion record** produces a small
 
 ## For faculty adopting it
 
-1. Open **Final assessment → Faculty settings**. Set signatory, cut score, item count, time limit, attempts, retention bar.
+1. Open **Final assessment → Faculty settings**. Set signatory, cut score, item count, time limit, attempts and retention bar, and upload a **signature image** if you want one on the certificate — scan or photograph your signature on white paper and the module downscales it to 600 px, mattes the paper out to transparency and stores it inside the file.
 2. Click **Export a configured copy**.
 3. Rename the download to `index.html`, upload to your repository, enable GitHub Pages. Upload `verify.html` alongside it if you want to read learners' completion records.
 
 **Two traps that catch everyone:**
 - Uploading the *unconfigured* file, so the certificate carries no signatory.
-- Embedding a full-resolution photograph. Base64 adds about a third to file size; resize to roughly 400×400 first.
+- Feeding the signature field a full-resolution photograph. It is downscaled for you, but start from a tight crop of the signature rather than a whole page: the stored size is shown next to the preview, and a good one is well under 20 KB.
 
 See **Appendix C** for three delivery models, a worked flipped-classroom session plan, feedback structures, the six-domain rubric, standard-setting worksheets and a Kirkpatrick evaluation plan. See **Appendix B** for four branching simulation scenarios that run on a doll and printed vital-sign cards.
 
 ## Privacy
 
 All state lives in the learner's browser under one versioned `localStorage` key — progress, preferences, and the enrolment details if any were given. No account, no server, no analytics, no telemetry. Nothing is transmitted anywhere, and a completion record leaves the device only when the learner exports it and sends it themselves. The Digital Personal Data Protection Act 2023 is satisfied by collecting nothing centrally at all. One-click irreversible erase is provided.
+
+## Rebuilding and testing it
+
+`index.html` is generated. The source is the numbered fragments in `build/`, concatenated by `build.py`, which also asserts the structure (unit count, unique question ids, exactly one correct option per item, balanced sections, and every script `id` reference resolving).
+
+```bash
+python build.py
+python tests/test_full.py      # and the other suites — see tests/README.md
+```
+
+Note that the **published `index.html` is a configured export**, carrying the signatory and cut score, so it will not be byte-identical to what `build.py` produces. That is intended: `build/` is the unconfigured source, and the published file is a distribution of it.
 
 ## Known limitations
 

@@ -972,6 +972,27 @@ caption{caption-side:bottom;padding:.65em .75em;font-size:.78rem;color:var(--ink
 }
 .fset input:focus,.fset select:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-glow);outline:none}
 
+/* ---------- faculty signature ---------- */
+.sigfield{margin:1.2em 0 0}
+.sigfield > label{display:block;font-size:.8rem;color:var(--ink-2);font-weight:650;margin-bottom:.4em}
+.sigfield .opt{font-weight:400;color:var(--ink-3)}
+.sigfield input[type="file"]{
+  display:block;width:100%;max-width:26rem;font:inherit;font-size:.85rem;color:var(--ink-2);
+  padding:.5em;border:1px dashed var(--line-2);border-radius:10px;background:var(--surface-2);cursor:pointer;
+}
+.sigfield input[type="file"]::file-selector-button{
+  font:inherit;font-size:.82rem;font-weight:650;margin-right:.8em;cursor:pointer;
+  background-color:var(--surface);color:var(--ink);border:1px solid var(--line-2);
+  border-radius:8px;padding:.4em .8em;
+}
+.sigprev{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:.8em}
+.sigbox{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:#fff;border:1px solid var(--line-2);border-radius:10px;padding:6px 10px;min-height:54px;
+}
+.sigbox img{max-height:44px;max-width:220px;display:block}
+.sigmeta{font-size:.78rem;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
 /* ---------- certificate ---------- */
 #certArea{margin-top:1.3em}
 .cert-preview{
@@ -1031,6 +1052,7 @@ footer a{color:var(--brand)}
   .cert-sheet h1{font-size:21pt;margin:0 0 2mm;color:#0d6e66;line-height:1.1}
   .cert-sheet .cn{font-size:17pt;border-bottom:1px solid #999;display:inline-block;padding:0 6mm 0.5mm;margin:1.5mm 0}
   .cert-sheet .meta{font-size:8pt;color:#333;margin:1mm 0}
+  .cert-sheet .sig{display:block;margin:1mm auto 0;max-height:11mm;max-width:60mm}
   .cert-sheet table{width:100%;font-size:8pt;margin:3mm 0;border-collapse:collapse}
   .cert-sheet table td{padding:0.8mm 0;border-bottom:1px solid #e2e2e2}
   .cert-sheet .scope{font-size:6.5pt;color:#444;border-top:1px solid #bbb;padding-top:1.5mm;margin-top:2.5mm;line-height:1.3}

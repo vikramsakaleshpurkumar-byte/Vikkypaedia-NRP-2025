@@ -7,8 +7,8 @@
 "use strict";
 
 /* ------------------------------------------------------------------ config */
-var VERSION   = "1.2.0";
-var BUILD     = "2026-09-11";
+var VERSION   = "1.3.0";
+var BUILD     = "2026-09-12";
 var STORE_KEY = "vkp.nrp2025.v1";
 var DAY       = 86400000;
 var LEITNER   = [1, 3, 7, 21, 60];        // days, by correct-streak box
@@ -1052,6 +1052,86 @@ function verifyCode(){
   return "NR25-" + s.slice(0,4) + "-" + s.slice(4,7);
 }
 
+/* ------------------------------------------------------------------ signature image */
+var SIGIMG = null;          // preloaded Image for the canvas certificate
+var SIG_MAX_W = 600;        // px, after downscale
+
+function loadSigImage(cb){
+  var src = cfg("signPhoto");
+  if (!src){ SIGIMG = null; if (cb) cb(); return; }
+  if (SIGIMG && SIGIMG.src === src){ if (cb) cb(); return; }
+  var im = new Image();
+  im.onload  = function(){ SIGIMG = im; if (cb) cb(); };
+  im.onerror = function(){ SIGIMG = null; if (cb) cb(); };
+  im.src = src;
+}
+
+// Ink-on-paper scans arrive opaque. Turn lightness into transparency so only the
+// ink composites onto the certificate; a PNG that already carries alpha is left alone.
+function matteSignature(cv){
+  var x = cv.getContext("2d");
+  var d;
+  try { d = x.getImageData(0, 0, cv.width, cv.height); } catch(e){ return; }
+  var px = d.data, hasAlpha = false;
+  for (var i = 3; i < px.length; i += 4){ if (px[i] < 250){ hasAlpha = true; break; } }
+  if (hasAlpha) return;
+  for (var j = 0; j < px.length; j += 4){
+    var lum = 0.2126*px[j] + 0.7152*px[j+1] + 0.0722*px[j+2];
+    var a = 255 - lum;
+    a = a < 18 ? 0 : Math.min(255, Math.round(a * 1.45));   // drop paper, deepen ink
+    px[j+3] = a;
+  }
+  x.putImageData(d, 0, 0);
+}
+
+function renderSigPreview(){
+  var wrap = $("#sigPrev"), img = $("#sigImg"), meta = $("#sigMeta");
+  if (!wrap) return;
+  var src = cfg("signPhoto");
+  if (!src){ wrap.hidden = true; if (img) img.removeAttribute("src"); return; }
+  wrap.hidden = false;
+  if (img) img.src = src;
+  if (meta) meta.textContent = Math.round(src.length * 0.75 / 1024) + " KB stored in the file";
+}
+
+function wireSignature(){
+  var inp = $("#fPhoto");
+  if (inp) inp.addEventListener("change", function(){
+    var f = inp.files && inp.files[0];
+    if (!f) return;
+    var fr = new FileReader();
+    fr.onload = function(){
+      var im = new Image();
+      im.onload = function(){
+        var scale = Math.min(1, SIG_MAX_W / im.width);
+        var cv = document.createElement("canvas");
+        cv.width  = Math.max(1, Math.round(im.width  * scale));
+        cv.height = Math.max(1, Math.round(im.height * scale));
+        cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+        matteSignature(cv);
+        S.settings = S.settings || {};
+        S.settings.signPhoto = cv.toDataURL("image/png");
+        save();
+        SIGIMG = null;
+        loadSigImage();
+        renderSigPreview();
+        inp.value = "";
+      };
+      im.onerror = function(){ alert("That file could not be read as an image."); inp.value = ""; };
+      im.src = fr.result;
+    };
+    fr.readAsDataURL(f);
+  });
+  var clr = $("#sigClear");
+  if (clr) clr.addEventListener("click", function(){
+    S.settings = S.settings || {};
+    S.settings.signPhoto = "";
+    save(); SIGIMG = null; renderSigPreview();
+  });
+  renderSigPreview();
+  loadSigImage();
+}
+
 function drawCert(){
   var d = certData();
   var W = 2400, H = 1697;
@@ -1106,6 +1186,12 @@ function drawCert(){
 
   // signature
   x.textAlign = "center";
+  if (SIGIMG && SIGIMG.width){
+    var maxW = 560, maxH = 115;
+    var sc = Math.min(maxW / SIGIMG.width, maxH / SIGIMG.height);
+    var sw = SIGIMG.width * sc, sh = SIGIMG.height * sc;
+    x.drawImage(SIGIMG, W/2 - sw/2, 1190 - sh, sw, sh);
+  }
   x.fillStyle = "#12151a"; x.font = "600 40px Georgia, serif";
   x.fillText(d.sign, W/2, 1210);
   x.strokeStyle = "#999"; x.lineWidth = 2;
@@ -1143,7 +1229,8 @@ function buildPrintSheet(d){
       '<tr><td>Applied performance — closed-book integrated assessment</td><td align="right"><b>' + d.exam + '</b> (cut ' + d.cut + ')</td></tr>' +
       '<tr><td>Longest demonstrated retention interval</td><td align="right"><b>' + d.longest + '</b></td></tr>' +
     '</tbody></table>' +
-    '<p style="margin-top:5mm"><b>' + esc(d.sign) + '</b><br>' + esc(d.role) + '</p>' +
+    (cfg("signPhoto") ? '<img class="sig" src="' + cfg("signPhoto") + '" alt="">' : '') +
+    '<p style="margin-top:2mm"><b>' + esc(d.sign) + '</b><br>' + esc(d.role) + '</p>' +
     '<p class="meta">Issued ' + d.date + ' · Verification code ' + d.code + ' · Module v' + VERSION + '</p>' +
     '<p class="scope">This certificate attests knowledge and clinical reasoning demonstrated by written assessment in a self-paced module. It does not attest bedside competence, confers no licence or clinical privilege, and is not a substitute for a supervised, hands-on neonatal resuscitation course. It is NOT the Neonatal Resuscitation Program® and confers no NRP® provider status or eCard; NRP® is a registered trademark of the American Academy of Pediatrics, which neither sponsors nor endorses this module. No CME credit unless separately accredited. The verification code is deterministically re-derivable from the displayed figures and is not tamper-proof.</p>' +
     '</div>';
@@ -1215,6 +1302,9 @@ function exportConfigured(){
     var n = $(sel, doc); if (n) n.innerHTML = "&mdash;"; });
   var op = $("#onbPath", doc); if (op) op.innerHTML = "";
   var ce = $("#certName", doc); if (ce) ce.removeAttribute("value");
+  var sp = $("#sigPrev", doc); if (sp) sp.setAttribute("hidden","");
+  var si = $("#sigImg", doc);  if (si) si.removeAttribute("src");
+  var sm = $("#sigMeta", doc); if (sm) sm.textContent = "";
 
   // seed faculty settings into the exported copy
   var seed = doc.ownerDocument.createElement("script");
@@ -1300,6 +1390,7 @@ function boot(){
   wirePrefs();
   wirePlacement();
   wireFaculty();
+  wireSignature();
   wireOnboarding();
   injectTableLabels();
 
@@ -1324,7 +1415,7 @@ function boot(){
   });
 
   var se = $("#startExam"); if (se) se.addEventListener("click", startExam);
-  var mc = $("#makeCert");  if (mc) mc.addEventListener("click", drawCert);
+  var mc = $("#makeCert");  if (mc) mc.addEventListener("click", function(){ loadSigImage(drawCert); });
   var dl = $("#dlCert");    if (dl) dl.addEventListener("click", function(){
     var cv = $("#certCanvas");
     var a = document.createElement("a");
@@ -1332,7 +1423,7 @@ function boot(){
     a.href = cv.toDataURL("image/png");
     document.body.appendChild(a); a.click(); a.remove();
   });
-  var pc = $("#printCert"); if (pc) pc.addEventListener("click", function(){ drawCert(); setTimeout(function(){ window.print(); }, 120); });
+  var pc = $("#printCert"); if (pc) pc.addEventListener("click", function(){ loadSigImage(function(){ drawCert(); setTimeout(function(){ window.print(); }, 160); }); });
   var dr = $("#dlRecord"); if (dr) dr.addEventListener("click", downloadRecord);
 
   var vs = $("#verStamp");

@@ -95,6 +95,17 @@
       <div><label for="fLock">Lock between attempts (hours)</label><input type="number" id="fLock" min="0" max="168" step="1"></div>
       <div><label for="fRet">Retention bar — units required of 24</label><input type="number" id="fRet" min="0" max="24" step="1"></div>
     </div>
+
+    <div class="sigfield">
+      <label for="fPhoto">Signature image <span class="opt">(optional)</span></label>
+      <input type="file" id="fPhoto" accept="image/png,image/jpeg,image/webp">
+      <div class="sigprev" id="sigPrev" hidden>
+        <span class="sigbox"><img id="sigImg" alt="Signature preview"></span>
+        <span class="sigmeta" id="sigMeta"></span>
+        <button type="button" class="btn ghost sm" id="sigClear">Remove</button>
+      </div>
+      <p class="dash-status" style="margin:.6em 0 0">Scan or photograph your signature on white paper. It is downscaled to 600&nbsp;px wide, the paper is matted out so only the ink remains, and the result is stored inside the file &mdash; so it travels with the exported copy and adds to its size. A PNG that already has a transparent background is used as-is.</p>
+    </div>
     <div class="btnrow">
       <button class="btn ghost" id="exportCopy">Export a configured copy</button>
       <button class="btn danger" id="eraseAll">Erase all my progress</button>

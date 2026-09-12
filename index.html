@@ -972,6 +972,27 @@ caption{caption-side:bottom;padding:.65em .75em;font-size:.78rem;color:var(--ink
 }
 .fset input:focus,.fset select:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-glow);outline:none}
 
+/* ---------- faculty signature ---------- */
+.sigfield{margin:1.2em 0 0}
+.sigfield > label{display:block;font-size:.8rem;color:var(--ink-2);font-weight:650;margin-bottom:.4em}
+.sigfield .opt{font-weight:400;color:var(--ink-3)}
+.sigfield input[type="file"]{
+  display:block;width:100%;max-width:26rem;font:inherit;font-size:.85rem;color:var(--ink-2);
+  padding:.5em;border:1px dashed var(--line-2);border-radius:10px;background:var(--surface-2);cursor:pointer;
+}
+.sigfield input[type="file"]::file-selector-button{
+  font:inherit;font-size:.82rem;font-weight:650;margin-right:.8em;cursor:pointer;
+  background-color:var(--surface);color:var(--ink);border:1px solid var(--line-2);
+  border-radius:8px;padding:.4em .8em;
+}
+.sigprev{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:.8em}
+.sigbox{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:#fff;border:1px solid var(--line-2);border-radius:10px;padding:6px 10px;min-height:54px;
+}
+.sigbox img{max-height:44px;max-width:220px;display:block}
+.sigmeta{font-size:.78rem;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
 /* ---------- certificate ---------- */
 #certArea{margin-top:1.3em}
 .cert-preview{
@@ -1031,6 +1052,7 @@ footer a{color:var(--brand)}
   .cert-sheet h1{font-size:21pt;margin:0 0 2mm;color:#0d6e66;line-height:1.1}
   .cert-sheet .cn{font-size:17pt;border-bottom:1px solid #999;display:inline-block;padding:0 6mm 0.5mm;margin:1.5mm 0}
   .cert-sheet .meta{font-size:8pt;color:#333;margin:1mm 0}
+  .cert-sheet .sig{display:block;margin:1mm auto 0;max-height:11mm;max-width:60mm}
   .cert-sheet table{width:100%;font-size:8pt;margin:3mm 0;border-collapse:collapse}
   .cert-sheet table td{padding:0.8mm 0;border-bottom:1px solid #e2e2e2}
   .cert-sheet .scope{font-size:6.5pt;color:#444;border-top:1px solid #bbb;padding-top:1.5mm;margin-top:2.5mm;line-height:1.3}
@@ -5682,6 +5704,17 @@ footer a{color:var(--brand)}
       <div><label for="fLock">Lock between attempts (hours)</label><input type="number" id="fLock" min="0" max="168" step="1"></div>
       <div><label for="fRet">Retention bar — units required of 24</label><input type="number" id="fRet" min="0" max="24" step="1"></div>
     </div>
+
+    <div class="sigfield">
+      <label for="fPhoto">Signature image <span class="opt">(optional)</span></label>
+      <input type="file" id="fPhoto" accept="image/png,image/jpeg,image/webp">
+      <div class="sigprev" id="sigPrev" hidden>
+        <span class="sigbox"><img id="sigImg" alt="Signature preview"></span>
+        <span class="sigmeta" id="sigMeta"></span>
+        <button type="button" class="btn ghost sm" id="sigClear">Remove</button>
+      </div>
+      <p class="dash-status" style="margin:.6em 0 0">Scan or photograph your signature on white paper. It is downscaled to 600&nbsp;px wide, the paper is matted out so only the ink remains, and the result is stored inside the file &mdash; so it travels with the exported copy and adds to its size. A PNG that already has a transparent background is used as-is.</p>
+    </div>
     <div class="btnrow">
       <button class="btn ghost" id="exportCopy">Export a configured copy</button>
       <button class="btn danger" id="eraseAll">Erase all my progress</button>
@@ -6634,8 +6667,8 @@ I("X30", 14,
 "use strict";
 
 /* ------------------------------------------------------------------ config */
-var VERSION   = "1.2.0";
-var BUILD     = "2026-09-11";
+var VERSION   = "1.3.0";
+var BUILD     = "2026-09-12";
 var STORE_KEY = "vkp.nrp2025.v1";
 var DAY       = 86400000;
 var LEITNER   = [1, 3, 7, 21, 60];        // days, by correct-streak box
@@ -7679,6 +7712,86 @@ function verifyCode(){
   return "NR25-" + s.slice(0,4) + "-" + s.slice(4,7);
 }
 
+/* ------------------------------------------------------------------ signature image */
+var SIGIMG = null;          // preloaded Image for the canvas certificate
+var SIG_MAX_W = 600;        // px, after downscale
+
+function loadSigImage(cb){
+  var src = cfg("signPhoto");
+  if (!src){ SIGIMG = null; if (cb) cb(); return; }
+  if (SIGIMG && SIGIMG.src === src){ if (cb) cb(); return; }
+  var im = new Image();
+  im.onload  = function(){ SIGIMG = im; if (cb) cb(); };
+  im.onerror = function(){ SIGIMG = null; if (cb) cb(); };
+  im.src = src;
+}
+
+// Ink-on-paper scans arrive opaque. Turn lightness into transparency so only the
+// ink composites onto the certificate; a PNG that already carries alpha is left alone.
+function matteSignature(cv){
+  var x = cv.getContext("2d");
+  var d;
+  try { d = x.getImageData(0, 0, cv.width, cv.height); } catch(e){ return; }
+  var px = d.data, hasAlpha = false;
+  for (var i = 3; i < px.length; i += 4){ if (px[i] < 250){ hasAlpha = true; break; } }
+  if (hasAlpha) return;
+  for (var j = 0; j < px.length; j += 4){
+    var lum = 0.2126*px[j] + 0.7152*px[j+1] + 0.0722*px[j+2];
+    var a = 255 - lum;
+    a = a < 18 ? 0 : Math.min(255, Math.round(a * 1.45));   // drop paper, deepen ink
+    px[j+3] = a;
+  }
+  x.putImageData(d, 0, 0);
+}
+
+function renderSigPreview(){
+  var wrap = $("#sigPrev"), img = $("#sigImg"), meta = $("#sigMeta");
+  if (!wrap) return;
+  var src = cfg("signPhoto");
+  if (!src){ wrap.hidden = true; if (img) img.removeAttribute("src"); return; }
+  wrap.hidden = false;
+  if (img) img.src = src;
+  if (meta) meta.textContent = Math.round(src.length * 0.75 / 1024) + " KB stored in the file";
+}
+
+function wireSignature(){
+  var inp = $("#fPhoto");
+  if (inp) inp.addEventListener("change", function(){
+    var f = inp.files && inp.files[0];
+    if (!f) return;
+    var fr = new FileReader();
+    fr.onload = function(){
+      var im = new Image();
+      im.onload = function(){
+        var scale = Math.min(1, SIG_MAX_W / im.width);
+        var cv = document.createElement("canvas");
+        cv.width  = Math.max(1, Math.round(im.width  * scale));
+        cv.height = Math.max(1, Math.round(im.height * scale));
+        cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+        matteSignature(cv);
+        S.settings = S.settings || {};
+        S.settings.signPhoto = cv.toDataURL("image/png");
+        save();
+        SIGIMG = null;
+        loadSigImage();
+        renderSigPreview();
+        inp.value = "";
+      };
+      im.onerror = function(){ alert("That file could not be read as an image."); inp.value = ""; };
+      im.src = fr.result;
+    };
+    fr.readAsDataURL(f);
+  });
+  var clr = $("#sigClear");
+  if (clr) clr.addEventListener("click", function(){
+    S.settings = S.settings || {};
+    S.settings.signPhoto = "";
+    save(); SIGIMG = null; renderSigPreview();
+  });
+  renderSigPreview();
+  loadSigImage();
+}
+
 function drawCert(){
   var d = certData();
   var W = 2400, H = 1697;
@@ -7733,6 +7846,12 @@ function drawCert(){
 
   // signature
   x.textAlign = "center";
+  if (SIGIMG && SIGIMG.width){
+    var maxW = 560, maxH = 115;
+    var sc = Math.min(maxW / SIGIMG.width, maxH / SIGIMG.height);
+    var sw = SIGIMG.width * sc, sh = SIGIMG.height * sc;
+    x.drawImage(SIGIMG, W/2 - sw/2, 1190 - sh, sw, sh);
+  }
   x.fillStyle = "#12151a"; x.font = "600 40px Georgia, serif";
   x.fillText(d.sign, W/2, 1210);
   x.strokeStyle = "#999"; x.lineWidth = 2;
@@ -7770,7 +7889,8 @@ function buildPrintSheet(d){
       '<tr><td>Applied performance — closed-book integrated assessment</td><td align="right"><b>' + d.exam + '</b> (cut ' + d.cut + ')</td></tr>' +
       '<tr><td>Longest demonstrated retention interval</td><td align="right"><b>' + d.longest + '</b></td></tr>' +
     '</tbody></table>' +
-    '<p style="margin-top:5mm"><b>' + esc(d.sign) + '</b><br>' + esc(d.role) + '</p>' +
+    (cfg("signPhoto") ? '<img class="sig" src="' + cfg("signPhoto") + '" alt="">' : '') +
+    '<p style="margin-top:2mm"><b>' + esc(d.sign) + '</b><br>' + esc(d.role) + '</p>' +
     '<p class="meta">Issued ' + d.date + ' · Verification code ' + d.code + ' · Module v' + VERSION + '</p>' +
     '<p class="scope">This certificate attests knowledge and clinical reasoning demonstrated by written assessment in a self-paced module. It does not attest bedside competence, confers no licence or clinical privilege, and is not a substitute for a supervised, hands-on neonatal resuscitation course. It is NOT the Neonatal Resuscitation Program® and confers no NRP® provider status or eCard; NRP® is a registered trademark of the American Academy of Pediatrics, which neither sponsors nor endorses this module. No CME credit unless separately accredited. The verification code is deterministically re-derivable from the displayed figures and is not tamper-proof.</p>' +
     '</div>';
@@ -7842,6 +7962,9 @@ function exportConfigured(){
     var n = $(sel, doc); if (n) n.innerHTML = "&mdash;"; });
   var op = $("#onbPath", doc); if (op) op.innerHTML = "";
   var ce = $("#certName", doc); if (ce) ce.removeAttribute("value");
+  var sp = $("#sigPrev", doc); if (sp) sp.setAttribute("hidden","");
+  var si = $("#sigImg", doc);  if (si) si.removeAttribute("src");
+  var sm = $("#sigMeta", doc); if (sm) sm.textContent = "";
 
   // seed faculty settings into the exported copy
   var seed = doc.ownerDocument.createElement("script");
@@ -7927,6 +8050,7 @@ function boot(){
   wirePrefs();
   wirePlacement();
   wireFaculty();
+  wireSignature();
   wireOnboarding();
   injectTableLabels();
 
@@ -7951,7 +8075,7 @@ function boot(){
   });
 
   var se = $("#startExam"); if (se) se.addEventListener("click", startExam);
-  var mc = $("#makeCert");  if (mc) mc.addEventListener("click", drawCert);
+  var mc = $("#makeCert");  if (mc) mc.addEventListener("click", function(){ loadSigImage(drawCert); });
   var dl = $("#dlCert");    if (dl) dl.addEventListener("click", function(){
     var cv = $("#certCanvas");
     var a = document.createElement("a");
@@ -7959,7 +8083,7 @@ function boot(){
     a.href = cv.toDataURL("image/png");
     document.body.appendChild(a); a.click(); a.remove();
   });
-  var pc = $("#printCert"); if (pc) pc.addEventListener("click", function(){ drawCert(); setTimeout(function(){ window.print(); }, 120); });
+  var pc = $("#printCert"); if (pc) pc.addEventListener("click", function(){ loadSigImage(function(){ drawCert(); setTimeout(function(){ window.print(); }, 160); }); });
   var dr = $("#dlRecord"); if (dr) dr.addEventListener("click", downloadRecord);
 
   var vs = $("#verStamp");

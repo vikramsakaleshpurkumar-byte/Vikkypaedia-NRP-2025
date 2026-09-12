@@ -81,7 +81,7 @@ with sync_playwright() as pw:
     check("record reports certified", r['result']['certified'] is True, r['result'])
     check("record carries a checksum", bool(r.get('checksum')), r.get('checksum'))
     check("record states it is self-attested", "Self-attested" in r['attestation'])
-    open(os.path.join(ROOT,'sample-record.json'),"w").write(json.dumps(saved,indent=2))
+    open(os.path.join(ROOT,"sample-record.json"),"w").write(json.dumps(saved,indent=2))
 
     print("\n== VERIFIER PAGE ==")
     v=ctx.new_page(); verrs=[]; v.on("pageerror",lambda e:verrs.append(str(e)))
