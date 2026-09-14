@@ -8,6 +8,7 @@
     <span class="nb-title">Neonatal Resuscitation 2025</span>
     <span class="tb-right">
       <span class="tb-pct" id="tbPct">0% mastered</span>
+      <button class="iconbtn" id="searchBtn" aria-label="Search the module" title="Search — Ctrl K or /"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5 L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       <button class="iconbtn" id="themeBtnM" aria-label="Change theme" title="Light / dark / system"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor"/></svg></button>
     </span>
   </div>
@@ -141,6 +142,31 @@
       <button type="button" class="btn" id="onbNext">Continue</button>
     </div>
   </div>
+</div>
+
+<!-- search palette -->
+<div class="srch noprint" id="srch" role="dialog" aria-modal="true" aria-label="Search the module" hidden>
+  <div class="srch-panel">
+    <div class="srch-top">
+      <svg class="srch-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5 L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="search" id="srchInput" placeholder="Search all 24 units and the appendices…" autocomplete="off" autocorrect="off" spellcheck="false" aria-controls="srchResults">
+      <button type="button" class="iconbtn sm" id="srchClose" aria-label="Close search">&#10005;</button>
+    </div>
+    <div class="srch-results" id="srchResults" role="listbox" aria-label="Search results"></div>
+    <div class="srch-foot">
+      <span id="srchCount">Type to search &mdash; doses, thresholds, a phrase you half remember.</span>
+      <span class="srch-keys"><kbd>↑</kbd><kbd>↓</kbd> move <kbd>↵</kbd> open <kbd>Esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<!-- full-screen figure viewer -->
+<div class="figzoom noprint" id="figZoom" role="dialog" aria-modal="true" aria-labelledby="figZoomTitle" hidden>
+  <div class="figzoom-head">
+    <h2 id="figZoomTitle">Diagram</h2>
+    <button type="button" class="iconbtn" id="figZoomClose" aria-label="Close the diagram">&#10005;&nbsp; Close</button>
+  </div>
+  <div class="figzoom-body" id="figZoomBody"></div>
 </div>
 
 <div class="drawer noprint" id="drawer" data-open="0">

@@ -822,6 +822,147 @@ caption{caption-side:bottom;padding:.65em .75em;font-size:.78rem;color:var(--ink
 @media (max-width:520px){.algo pre{font-size:.66rem}}
 
 /* ============================================================
+   SEARCH PALETTE
+   ============================================================ */
+.srch{
+  position:fixed;inset:0;z-index:190;background:rgba(4,10,18,.5);
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:max(6vh,18px) 16px 16px;animation:fade .16s ease;
+}
+.srch-panel{
+  background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-xl);
+  box-shadow:var(--sh-3);width:min(720px,100%);max-height:min(76vh,680px);
+  display:flex;flex-direction:column;overflow:hidden;animation:rise .2s cubic-bezier(.4,0,.2,1);
+}
+.srch-top{
+  display:flex;align-items:center;gap:10px;padding:12px 14px;
+  border-bottom:1px solid var(--line);flex:0 0 auto;
+}
+.srch-icon{color:var(--ink-3);flex:0 0 auto}
+#srchInput{
+  flex:1;min-width:0;border:0;background:none;color:var(--ink);
+  font:inherit;font-size:1.02rem;padding:.35em 0;outline:none;
+}
+#srchInput::placeholder{color:var(--ink-3)}
+#srchInput::-webkit-search-cancel-button{display:none}
+.iconbtn.sm{min-width:32px;min-height:30px;font-size:.8rem;border-radius:8px}
+
+.srch-results{overflow-y:auto;flex:1;min-height:0;padding:6px}
+.srch-empty{padding:2.2em 1.2em;text-align:center;color:var(--ink-3);font-size:.92rem}
+.sr{
+  display:block;width:100%;text-align:left;background:none;border:0;cursor:pointer;
+  padding:.6em .75em;border-radius:10px;line-height:1.5;
+}
+.sr:hover,.sr[aria-selected="true"]{background:var(--surface-2)}
+.sr[aria-selected="true"]{box-shadow:inset 0 0 0 1px var(--line-2)}
+.sr-where{
+  display:flex;align-items:center;gap:.5em;flex-wrap:wrap;
+  font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;font-weight:800;
+  color:var(--acc,var(--brand));margin-bottom:.15em;
+}
+.sr[data-part="A"]{--acc:var(--pA)} .sr[data-part="B"]{--acc:var(--pB)}
+.sr[data-part="C"]{--acc:var(--pC)} .sr[data-part="D"]{--acc:var(--pD)}
+.sr[data-part="E"]{--acc:var(--pE)}
+.sr-lock{
+  background:var(--surface-3);color:var(--ink-2);border-radius:4px;
+  padding:.14em .42em;font-size:.58rem;letter-spacing:.1em;
+}
+.sr-txt{font-size:.9rem;color:var(--ink-2)}
+.sr-txt mark{background:var(--brand-soft);color:var(--brand-ink);border-radius:3px;padding:0 .12em;font-weight:700}
+:root[data-theme="dark"] .sr-txt mark{color:var(--brand)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sr-txt mark{color:var(--brand)}}
+.sr-note{font-size:.84rem;color:var(--ink-3);font-style:italic}
+
+.srch-foot{
+  display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:space-between;align-items:center;
+  padding:9px 14px;border-top:1px solid var(--line);background:var(--surface-2);
+  font-size:.76rem;color:var(--ink-3);flex:0 0 auto;
+}
+.srch-keys{display:flex;align-items:center;gap:.35em;white-space:nowrap}
+@media (max-width:560px){.srch-keys{display:none}}
+.srch-keys kbd{
+  font-family:var(--sans);font-size:.7rem;background:var(--surface);
+  border:1px solid var(--line-2);border-bottom-width:2px;border-radius:5px;padding:.1em .4em;color:var(--ink-2);
+}
+/* the landing flash after jumping to a result */
+@keyframes srchflash{0%{background:var(--brand-soft)}100%{background:transparent}}
+.srch-hit{animation:srchflash 1.8s ease-out;border-radius:6px}
+
+/* ============================================================
+   FIGURES — inline SVG diagrams
+   ============================================================ */
+.fig{margin:1.6em 0;padding:0}
+.fig-t{
+  font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);
+  font-weight:800;margin:0 0 .6em;
+}
+.fig-svg{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:10px 8px 22px;box-shadow:var(--sh-1);cursor:zoom-in;position:relative;
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+.fig-svg:hover{border-color:var(--line-2);box-shadow:var(--shadow)}
+.fig-svg::after{
+  content:"Tap to enlarge";position:absolute;right:12px;bottom:7px;
+  font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;font-weight:800;
+  color:var(--ink-3);opacity:.8;pointer-events:none;
+}
+@media (min-width:760px){.fig-svg::after{content:"Click to enlarge"}}
+.figsvg{display:block;width:100%;height:auto}
+
+.figsvg .fn rect{fill:var(--surface-2);stroke:var(--line-2);stroke-width:1.5}
+.figsvg .ft{font-size:13.5px;font-weight:700;fill:var(--ink);letter-spacing:-.01em}
+.figsvg .fl{font-size:13.5px;font-weight:400;fill:var(--ink-2)}
+.figsvg .fe{fill:none;stroke:var(--line-2);stroke-width:2}
+.figsvg marker path{fill:var(--line-2)}
+.figsvg .fedge{font-size:11.5px;font-weight:800;fill:var(--ink-3);letter-spacing:.04em}
+.figsvg .ftag{font-size:11.5px;font-style:italic;fill:var(--ink-3)}
+
+.figsvg .fn-band rect{fill:var(--ink);stroke:var(--ink)}
+.figsvg .fn-band .ft{fill:var(--paper);letter-spacing:.12em;font-size:12.5px}
+.figsvg .fn-band .fl{fill:var(--paper);opacity:.85}
+.figsvg .fn-ask rect{fill:var(--brand-soft);stroke:var(--brand);stroke-width:2}
+.figsvg .fn-ask .ft{fill:var(--brand-ink)}
+.figsvg .fn-good rect{fill:var(--green-soft);stroke:var(--green)}
+.figsvg .fn-good .ft{fill:var(--green)}
+.figsvg .fn-warn rect{fill:var(--amber-soft);stroke:var(--amber)}
+.figsvg .fn-warn .ft{fill:var(--amber)}
+.figsvg .fn-crit rect{fill:var(--red-soft);stroke:var(--red);stroke-width:2}
+.figsvg .fn-crit .ft{fill:var(--red)}
+.figsvg .fn-note rect{fill:var(--surface);stroke:var(--line-2);stroke-dasharray:5 4}
+.figsvg .fn-note .ft{fill:var(--ink-2);font-weight:650}
+:root[data-theme="dark"] .figsvg .fn-ask .ft{fill:var(--brand)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .figsvg .fn-ask .ft{fill:var(--brand)}}
+
+.fig-alt{margin-top:.6em}
+.fig-alt > summary{
+  cursor:pointer;font-size:.78rem;color:var(--ink-3);font-weight:650;
+  padding:.35em .1em;list-style:none;display:inline-flex;align-items:center;gap:.4em;
+}
+.fig-alt > summary::-webkit-details-marker{display:none}
+.fig-alt > summary::before{content:"\25b8";transition:transform .18s ease;display:inline-block;font-size:.8em}
+.fig-alt[open] > summary::before{transform:rotate(90deg)}
+.fig-alt > summary:hover{color:var(--ink)}
+.fig-alt .algo{margin:.5em 0 0}
+
+.figzoom{
+  position:fixed;inset:0;z-index:180;background:var(--paper);
+  display:flex;flex-direction:column;animation:fade .16s ease;
+}
+.figzoom-head{
+  display:flex;align-items:center;gap:12px;padding:12px 16px;
+  border-bottom:1px solid var(--line);background:var(--surface);
+}
+.figzoom-head h2{
+  margin:0;font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:800;flex:1;
+}
+.figzoom-body{flex:1;min-height:0;overflow:auto;padding:18px;display:flex;align-items:flex-start;justify-content:center}
+.figzoom-body svg{width:100%;max-width:1100px;height:auto}
+.figzoom-body .figsvg .ft,.figzoom-body .figsvg .fl{font-size:14.5px}
+
+/* ============================================================
    MCQ
    ============================================================ */
 .q{
@@ -1070,6 +1211,7 @@ footer a{color:var(--brand)}
     <span class="nb-title">Neonatal Resuscitation 2025</span>
     <span class="tb-right">
       <span class="tb-pct" id="tbPct">0% mastered</span>
+      <button class="iconbtn" id="searchBtn" aria-label="Search the module" title="Search — Ctrl K or /"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5 L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       <button class="iconbtn" id="themeBtnM" aria-label="Change theme" title="Light / dark / system"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor"/></svg></button>
     </span>
   </div>
@@ -1203,6 +1345,31 @@ footer a{color:var(--brand)}
       <button type="button" class="btn" id="onbNext">Continue</button>
     </div>
   </div>
+</div>
+
+<!-- search palette -->
+<div class="srch noprint" id="srch" role="dialog" aria-modal="true" aria-label="Search the module" hidden>
+  <div class="srch-panel">
+    <div class="srch-top">
+      <svg class="srch-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5 L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="search" id="srchInput" placeholder="Search all 24 units and the appendices…" autocomplete="off" autocorrect="off" spellcheck="false" aria-controls="srchResults">
+      <button type="button" class="iconbtn sm" id="srchClose" aria-label="Close search">&#10005;</button>
+    </div>
+    <div class="srch-results" id="srchResults" role="listbox" aria-label="Search results"></div>
+    <div class="srch-foot">
+      <span id="srchCount">Type to search &mdash; doses, thresholds, a phrase you half remember.</span>
+      <span class="srch-keys"><kbd>↑</kbd><kbd>↓</kbd> move <kbd>↵</kbd> open <kbd>Esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<!-- full-screen figure viewer -->
+<div class="figzoom noprint" id="figZoom" role="dialog" aria-modal="true" aria-labelledby="figZoomTitle" hidden>
+  <div class="figzoom-head">
+    <h2 id="figZoomTitle">Diagram</h2>
+    <button type="button" class="iconbtn" id="figZoomClose" aria-label="Close the diagram">&#10005;&nbsp; Close</button>
+  </div>
+  <div class="figzoom-body" id="figZoomBody"></div>
 </div>
 
 <div class="drawer noprint" id="drawer" data-open="0">
@@ -1588,9 +1755,11 @@ footer a{color:var(--brand)}
     <div class="sec tier-must">
       <h4>3 · When transition fails: primary and secondary apnoea <span class="tag t-must">Must-know</span></h4>
       <p>When placental gas exchange fails, the fetus follows a stereotyped sequence. Fetal monitoring may show reduced movement, loss of heart-rate variability, then decelerations. Then:</p>
-      <div class="algo">
-        <div class="algo-t">The apnoea cascade</div>
-<pre>  Hypoxia begins
+      <figure class="fig">
+        <figcaption class="fig-t">The apnoea cascade</figcaption>
+        <div class="fig-svg" data-figspec="apnoea"></div>
+        <details class="fig-alt"><summary>Text version</summary>
+          <div class="algo"><pre>  Hypoxia begins
         │
         ▼
   RAPID BREATHING ──▶ PRIMARY APNOEA
@@ -1610,8 +1779,9 @@ footer a{color:var(--brand)}
                       • REQUIRES ASSISTED VENTILATION
         │
         ▼
-  Death, unless the lungs are ventilated.</pre>
-      </div>
+  Death, unless the lungs are ventilated.</pre></div>
+        </details>
+      </figure>
       <div class="box danger">
         <h5>The fact that decides the case</h5>
         <p><b>At the bedside, primary and secondary apnoea look identical.</b> A limp, apnoeic baby gives you no clue as to which phase they are in, because the cascade may have started <i>in utero</i> and you did not see the beginning. Therefore: if a baby is not breathing after the initial steps, you <b>assume secondary apnoea and ventilate</b>. Continuing to stimulate a baby in secondary apnoea is the commonest lethal error in neonatal resuscitation, and it always looks like diligence.</p>
@@ -1733,9 +1903,11 @@ footer a{color:var(--brand)}
     <div class="sec tier-must">
       <h4>1 · The whole algorithm on one screen <span class="tag t-must">Must-know</span></h4>
       <p class="scroll-hint">Wide diagram — scroll sideways, or rotate your phone.</p>
-      <div class="algo">
-        <div class="algo-t">Neonatal resuscitation, 2025 · assessments in ⟨angle brackets⟩, actions in boxes</div>
-<pre>  ┌─ BEFORE BIRTH ─────────────────────────────────────────────┐
+      <figure class="fig">
+        <figcaption class="fig-t">Neonatal resuscitation, 2025 · assessments in ⟨angle brackets⟩, actions in boxes</figcaption>
+        <div class="fig-svg" data-figspec="alg2025"></div>
+        <details class="fig-alt"><summary>Text version</summary>
+          <div class="algo"><pre>  ┌─ BEFORE BIRTH ─────────────────────────────────────────────┐
   │  Antenatal counselling · Team briefing · Equipment check    │
   │  Agree the umbilical cord management plan                   │
   └────────────────────────┬───────────────────────────────────┘
@@ -1797,8 +1969,9 @@ footer a{color:var(--brand)}
   │   2 min  65–70%      5 min  80–85%      │
   │   3 min  70–75%     10 min  85–95%      │
   │   4 min  75–80%                         │
-  └─────────────────────────────────────────┘</pre>
-      </div>
+  └─────────────────────────────────────────┘</pre></div>
+        </details>
+      </figure>
     </div>
 
     <div class="sec tier-must">
@@ -2471,9 +2644,11 @@ footer a{color:var(--brand)}
     <div class="sec tier-must">
       <h4>1 · The three questions <span class="tag t-must">Must-know</span></h4>
       <p>Asked at birth, often during the deferred-clamping interval. They decide one thing only: does this baby stay with the parent, or go to the warmer?</p>
-      <div class="algo">
-        <div class="algo-t">Initial evaluation</div>
-<pre>  ① Does the baby appear TERM?
+      <figure class="fig">
+        <figcaption class="fig-t">Initial evaluation</figcaption>
+        <div class="fig-svg" data-figspec="initeval"></div>
+        <details class="fig-alt"><summary>Text version</summary>
+          <div class="algo"><pre>  ① Does the baby appear TERM?
   ② Does the baby have GOOD MUSCLE TONE?
   ③ Is the baby BREATHING OR CRYING?
 
@@ -2488,8 +2663,9 @@ footer a{color:var(--brand)}
   Note on ①: an infant at 34–36 weeks who is vigorous with good
   respiratory effort can be returned to the parent within a few
   minutes. "Preterm" means come to the warmer FIRST, not stay
-  away from the parent.</pre>
-      </div>
+  away from the parent.</pre></div>
+        </details>
+      </figure>
       <div class="box pitfall">
         <h5>Pitfall — the gasping baby again</h5>
         <p>Question ③ asks whether the baby is <b>breathing or crying</b>. A gasping baby is answering "no". After cord clamping, a gasping newborn needs the warmer and needs intervention. Do not let the visible chest excursion of a gasp read as a "yes".</p>
@@ -2558,9 +2734,11 @@ footer a{color:var(--brand)}
     <div class="sec tier-must">
       <h4>4 · Meconium-stained amniotic fluid <span class="tag t-must">Must-know</span></h4>
       <p>Meconium-stained liquor is a <b>perinatal risk factor</b>: it raises the likelihood the baby will need resuscitation. It changes who attends the birth. It does <b>not</b> change the initial steps.</p>
-      <div class="algo">
-        <div class="algo-t">Meconium — the whole decision</div>
-<pre>  BEFORE THE BIRTH
+      <figure class="fig">
+        <figcaption class="fig-t">Meconium — the whole decision</figcaption>
+        <div class="fig-svg" data-figspec="meconium"></div>
+        <details class="fig-alt"><summary>Text version</summary>
+          <div class="algo"><pre>  BEFORE THE BIRTH
     ≥2 qualified people present solely for the baby
     Someone with intubation skills identified and
       IMMEDIATELY available
@@ -2587,8 +2765,9 @@ footer a{color:var(--brand)}
 
   Intubation and tracheal suction ARE indicated if ventilation
   fails to inflate the lungs and airway obstruction by thick
-  secretions is suspected. That is a rescue, not a routine.</pre>
-      </div>
+  secretions is suspected. That is a rescue, not a routine.</pre></div>
+        </details>
+      </figure>
       <div class="box evidence">
         <h5>Evidence note — why routine tracheal suction was abandoned <span class="tag t-a">MBBS/PG</span></h5>
         <p>The old recommendation rested on small observational studies that did not use methods capable of comparing treatments without bias. When randomised trials of non-vigorous meconium-stained infants were eventually done, they <b>did not show benefit</b> from tracheal suction. Routine suction has not been recommended since 2016. Subsequent observational work asking whether outcomes worsened after the change has reached mixed conclusions, and there remains no conclusive evidence that routine tracheal suction improves any important outcome.</p>
@@ -3041,9 +3220,11 @@ footer a{color:var(--brand)}
     <div class="sec tier-must">
       <h4>3 · Assess at 30 seconds — the three answers <span class="tag t-must">Must-know</span></h4>
       <p>Once ventilation is <i>aerating the lungs</i> — signalled by a rising heart rate or chest movement — continue for 30 seconds, then check the heart rate. There are exactly three outcomes.</p>
-      <div class="algo">
-        <div class="algo-t">After 30 seconds of effective ventilation</div>
-<pre>  HR ≥ 100/min  ──▶ VENTILATION HAS WORKED
+      <figure class="fig">
+        <figcaption class="fig-t">After 30 seconds of effective ventilation</figcaption>
+        <div class="fig-svg" data-figspec="after30"></div>
+        <details class="fig-alt"><summary>Text version</summary>
+          <div class="algo"><pre>  HR ≥ 100/min  ──▶ VENTILATION HAS WORKED
                      • continue at 30–60/min
                      • monitor chest movement, HR, respiratory effort
                      • titrate FiO₂ to the target table
@@ -3069,8 +3250,9 @@ footer a{color:var(--brand)}
                      • cardiac monitor ON
                      • INSERT AN ALTERNATIVE AIRWAY if not done
                      • give 30 s of ventilation through that airway
-                     • still <60?  FiO₂ to 100% and START COMPRESSIONS</pre>
-      </div>
+                     • still <60?  FiO₂ to 100% and START COMPRESSIONS</pre></div>
+        </details>
+      </figure>
       <div class="box pearl">
         <h5>Pearl — announce the transition</h5>
         <p>The moment ventilation starts inflating the lungs, say out loud: <b>"The chest is moving NOW."</b> That sentence does two things. It tells the team no further corrective steps are needed, and it starts the 30-second clock at a point everyone agrees on. Without it, teams argue afterwards about when the 30 seconds began — and during the event, they escalate from a clock that started too early.</p>
@@ -4685,9 +4867,11 @@ footer a{color:var(--brand)}
 
     <div class="sec tier-must">
       <h4>3 · Respiratory support — the preterm strategy <span class="tag t-must">Must-know</span></h4>
-      <div class="algo">
-        <div class="algo-t">Decision path for the preterm infant after the initial steps</div>
-<pre>  Breathing spontaneously, HR ≥100, but laboured or SpO₂ below target
+      <figure class="fig">
+        <figcaption class="fig-t">Decision path for the preterm infant after the initial steps</figcaption>
+        <div class="fig-svg" data-figspec="preterm"></div>
+        <details class="fig-alt"><summary>Text version</summary>
+          <div class="algo"><pre>  Breathing spontaneously, HR ≥100, but laboured or SpO₂ below target
         │
         ▼
      CPAP 5–6 cm H₂O by mask (T-piece or flow-inflating bag)
@@ -4719,8 +4903,9 @@ footer a{color:var(--brand)}
               SALSA — via a laryngeal/supraglottic airway
               ► criteria for "CPAP failure" are set locally
               ► if your team lacks surfactant expertise, it may be
-                better to WAIT for someone who has it</pre>
-      </div>
+                better to WAIT for someone who has it</pre></div>
+        </details>
+      </figure>
       <div class="box evidence">
         <h5>Evidence note — prophylactic surfactant versus early CPAP <span class="tag t-a">MBBS/PG</span></h5>
         <p>Studies done <i>before</i> antenatal steroids and early CPAP were routine concluded that infants below about 30 weeks benefited from intubation and prophylactic surfactant before respiratory distress developed. Subsequent studies changed that: early CPAP should be considered as an <b>alternative</b> to routine intubation and prophylactic surfactant, and many preterm infants can be stabilised on CPAP alone, avoiding the risks of intubation and mechanical ventilation. Surfactant is then given selectively to those who fail CPAP. Some experts still favour prophylactic surfactant for a subset of extremely preterm infants in whom CPAP failure is very likely. Criteria should be agreed with local experts — this is a legitimate area of practice variation, not a settled answer.</p>
@@ -6659,6 +6844,218 @@ I("X30", 14,
 })();
 </script>
 <script>
+/* ------------------------------------------------------------------
+   Figure specs. Rendered to inline SVG by figSVG() in the engine.
+   Kinds: band | ask | step | good | warn | crit | note
+   A node with side:1 hangs off node `from` in the right column.
+   `edge` labels the arrow that arrives at the node.
+   `tag`  is a small italic note beside the arrow above the node.
+   ------------------------------------------------------------------ */
+var FIGS = {
+
+"alg2025": {
+  w: 860, main: 470, side: 330,
+  nodes: [
+    {id:"pre", k:"band", t:"BEFORE BIRTH",
+     l:["Antenatal counselling · team briefing · equipment check",
+        "Agree the umbilical cord management plan"]},
+
+    {id:"q1", k:"ask", t:"Term? Good tone? Breathing or crying?",
+     tag:"BIRTH — start the clock"},
+
+    {id:"routine", k:"good", side:1, from:"q1", edge:"YES",
+     t:"Stay with the parent",
+     l:["Skin to skin, routine care, keep warm","Ongoing evaluation"]},
+
+    {id:"stepsA", k:"step", edge:"NO to any",
+     t:"A · INITIAL STEPS — at the radiant warmer",
+     l:["Warm · maintain 36.5–37.5 °C","Dry · position (sniffing)",
+        "Stimulate · clear the airway only if needed"]},
+
+    {id:"q2", k:"ask", t:"Apnoeic or gasping? OR heart rate <100/min?",
+     tag:"by 60 SECONDS"},
+
+    {id:"cpap", k:"good", side:1, from:"q2", edge:"NO — but laboured breathing or persistent cyanosis",
+     t:"Pulse oximeter",
+     l:["Oxygen if needed, starting at 30%","Consider CPAP 5–6 cmH₂O"]},
+
+    {id:"ppv", k:"warn", edge:"YES",
+     t:"B · VENTILATE — positive-pressure ventilation",
+     l:["30–60 breaths/min","PIP 25 · PEEP 5","FiO₂ by gestation",
+        "Pulse oximeter · consider cardiac monitor"]},
+
+    {id:"q3", k:"ask", t:"Heart rate <100/min?", tag:"after 30 s"},
+
+    {id:"wean", k:"note", side:1, from:"q3", edge:"NO",
+     t:"Continue PPV, then wean", l:["Post-resuscitation care"]},
+
+    {id:"mrsopa", k:"warn", edge:"YES",
+     t:"VENTILATION CORRECTIVE STEPS — MR SOPA",
+     l:["Consider a laryngeal mask or intubation","Attach a cardiac monitor"]},
+
+    {id:"q4", k:"ask", t:"Heart rate <60/min?",
+     tag:"after ≥30 s of ventilation that inflates the lungs"},
+
+    {id:"contppv", k:"note", side:1, from:"q4", edge:"NO", t:"Continue PPV"},
+
+    {id:"comp", k:"crit", edge:"YES",
+     t:"C · Intubate or place a laryngeal mask · CHEST COMPRESSIONS",
+     l:["3 : 1 with ventilation","90 compressions + 30 breaths per minute",
+        "FiO₂ 100%","UVC or intraosseous access"]},
+
+    {id:"q5", k:"ask", t:"Heart rate <60/min?", tag:"after 60 s"},
+
+    {id:"stopc", k:"note", side:1, from:"q5", edge:"NO",
+     t:"Stop compressions, continue PPV"},
+
+    {id:"epi", k:"crit", edge:"YES",
+     t:"D · EPINEPHRINE 0.02 mg/kg IV/IO (0.1 mg/mL)",
+     l:["Repeat every 3–5 minutes",
+        "If the heart rate is still <60: consider HYPOVOLAEMIA",
+        "and consider PNEUMOTHORAX"]}
+  ]
+},
+
+"apnoea": {
+  w: 720, main: 430, side: 250,
+  nodes: [
+    {id:"hyp", k:"band", t:"HYPOXIA BEGINS"},
+    {id:"rapid", k:"step", t:"Rapid breathing"},
+    {id:"prim", k:"warn", t:"PRIMARY APNOEA",
+     l:["Heart rate falls but is maintained","Blood pressure maintained",
+        "RESPONDS to stimulation alone"]},
+    {id:"gasp", k:"warn", edge:"hypoxia continues",
+     t:"GASPING",
+     l:["Deep, single or stacked inspirations","A terminal reflex sign — this is NOT breathing"]},
+    {id:"sec", k:"crit", t:"SECONDARY APNOEA",
+     l:["Heart rate falls further","Blood pressure falls",
+        "DOES NOT respond to stimulation","REQUIRES ASSISTED VENTILATION"]},
+    {id:"death", k:"crit", t:"Death, unless the lungs are ventilated"},
+    {id:"key", k:"note", side:1, from:"prim",
+     t:"At the bedside the two look identical",
+     l:["A limp, apnoeic baby gives you no clue which phase it is in.",
+        "If the baby is not breathing after the initial steps, assume",
+        "secondary apnoea and ventilate."]}
+  ]
+},
+
+"initeval": {
+  w: 760, main: 440, side: 280,
+  nodes: [
+    {id:"birth", k:"band", t:"BIRTH"},
+    {id:"q1", k:"ask", t:"Term gestation? Good muscle tone? Breathing or crying?"},
+    {id:"mother", k:"good", side:1, from:"q1", edge:"YES to all three",
+     t:"Stay with the mother",
+     l:["Delayed cord clamping","Skin to skin · dry · keep warm","Evaluate continuously"]},
+    {id:"warmer", k:"step", edge:"NO to any one",
+     t:"Move to the radiant warmer — the initial steps",
+     l:["Warm · dry · position · stimulate","Clear the airway only if it is obstructed"]},
+    {id:"q2", k:"ask", t:"Breathing well AND heart rate ≥100/min?", tag:"by 60 seconds"},
+    {id:"obs", k:"good", side:1, from:"q2", edge:"YES",
+     t:"Observe", l:["Pulse oximetry if cyanosed or laboured"]},
+    {id:"ppv", k:"crit", edge:"NO",
+     t:"Start positive-pressure ventilation",
+     l:["This is the intervention that saves newborn lives.","Do not delay it to suction, to stimulate again, or to call for help."]}
+  ]
+},
+
+"after30": {
+  w: 760, main: 450, side: 270,
+  nodes: [
+    {id:"start", k:"band", t:"AFTER 30 SECONDS OF PPV"},
+    {id:"q1", k:"ask", t:"Is the heart rate rising?"},
+    {id:"cont", k:"good", side:1, from:"q1", edge:"YES",
+     t:"Ventilation is working",
+     l:["Continue at 30–60 breaths/min","Wean as the heart rate and saturation rise"]},
+    {id:"chest", k:"ask", edge:"NO", t:"Is the chest moving with each breath?"},
+    {id:"mrsopa", k:"warn", edge:"NO",
+     t:"MR SOPA — in this order, reassessing after each",
+     l:["M  Mask adjust — reseat, do not press harder",
+        "R  Reposition the head to sniffing",
+        "S  Suction the mouth then the nose",
+        "O  Open the mouth slightly",
+        "P  Pressure increase in 5 cmH₂O steps",
+        "A  Alternative airway — laryngeal mask or tube"]},
+    {id:"moving", k:"warn", side:1, from:"chest", edge:"YES, but the heart rate is not rising",
+     t:"Chest moves, heart rate does not rise",
+     l:["Ventilate for a full 30 s of chest movement","Then reassess — this is the trigger for compressions"]},
+    {id:"q2", k:"ask", t:"Heart rate <60/min after ≥30 s of chest movement?"},
+    {id:"comp", k:"crit", edge:"YES",
+     t:"Alternative airway, then chest compressions",
+     l:["3 : 1 · 90 compressions + 30 breaths per minute","FiO₂ 100% · obtain vascular access"]}
+  ]
+}
+
+
+,
+
+"meconium": {
+  w: 800, main: 470, side: 300,
+  nodes: [
+    {id:"pre", k:"band", t:"BEFORE THE BIRTH",
+     l:["\u22652 qualified people present solely for the baby",
+        "Someone with intubation skills identified and IMMEDIATELY available",
+        "If other risk factors suggest a complex resuscitation, the full team is present"]},
+    {id:"q1", k:"ask", t:"Is the baby VIGOROUS?",
+     tag:"good tone AND good respiratory effort"},
+    {id:"vig", k:"good", side:1, from:"q1", edge:"YES",
+     t:"Stays with the parent",
+     l:["Routine initial steps. Nothing different.","No suction. No laryngoscopy."]},
+    {id:"nonvig", k:"warn", edge:"NO \u2014 non-vigorous",
+     t:"It may be reasonable to briefly defer cord clamping",
+     l:["while you begin the initial steps and stimulate"]},
+    {id:"noimp", k:"step", edge:"if there is no improvement",
+     t:"Clamp, move to the warmer, complete the initial steps",
+     l:["If secretions appear to OBSTRUCT the airway, clear the mouth",
+        "and nose with a bulb syringe \u2014 obstruction, not routine"]},
+    {id:"q2", k:"ask", t:"Apnoeic, OR gasping, OR heart rate <100 at 60 seconds?"},
+    {id:"ppv", k:"crit", edge:"YES", t:"START POSITIVE-PRESSURE VENTILATION"},
+    {id:"never", k:"note", side:1, from:"q2",
+     t:"Routine laryngoscopy \u00b1 tracheal suction is NOT recommended",
+     l:["Vigorous or not.",
+        "Intubation and tracheal suction ARE indicated if ventilation fails to",
+        "inflate the lungs and obstruction by thick secretions is suspected.",
+        "That is a rescue, not a routine."]}
+  ]
+},
+
+"preterm": {
+  w: 830, main: 490, side: 310,
+  nodes: [
+    {id:"start", k:"band", t:"PRETERM, AFTER THE INITIAL STEPS",
+     l:["Breathing spontaneously, HR \u2265100, but laboured or SpO\u2082 below target"]},
+    {id:"cpap", k:"step", t:"CPAP 5\u20136 cmH\u2082O by mask (T-piece or flow-inflating bag)",
+     l:["Early CPAP frequently AVOIDS intubation and ventilation",
+        "Watch for the trigemino-cardiac reflex: apnoea or bradycardia",
+        "immediately after the mask is applied"]},
+    {id:"better", k:"good", side:1, from:"cpap", edge:"IMPROVES",
+     t:"Nasal prongs or nasal mask",
+     l:["Continue CPAP","Monitor effort, heart rate and SpO\u2082"]},
+    {id:"q1", k:"ask", t:"Fails, OR heart rate <100, OR apnoeic or gasping?"},
+    {id:"ppv", k:"warn", edge:"YES",
+     t:"PPV \u2014 PEEP 5, PIP 20\u201325, FiO\u2082 by gestation",
+     l:["Use the LOWEST pressure that achieves and maintains HR >100.",
+        "Chest movement may NOT be visible in a preterm lung.",
+        "Face-mask maximum 30 cmH\u2082O. If that fails, a laryngeal mask or",
+        "tube often lets you ventilate at LOWER pressure.",
+        "A CO\u2082 detector between mask and device is a visual cue that you",
+        "have found the right position."]},
+    {id:"surf", k:"step", edge:"intubated for respiratory distress, or extremely preterm",
+     t:"SURFACTANT",
+     l:["INSURE \u2014 INtubate, SURfactant, Extubate to CPAP",
+        "LISA / MIST \u2014 thin catheter, the baby stays on CPAP",
+        "SALSA \u2014 via a laryngeal or supraglottic airway"]},
+    {id:"local", k:"note", side:1, from:"surf",
+     t:"Local rules decide",
+     l:["The criteria for \u201cCPAP failure\u201d are set locally.",
+        "If your team lacks surfactant, CPAP and warmth are still",
+        "the two interventions that change outcome."]}
+  ]
+}
+
+};
+</script>
+<script>
 /* ============================================================================
    Vikkypaedia · Neonatal Resuscitation 2025 · learning engine
    Single file. No dependencies. No network. All state in localStorage.
@@ -6667,7 +7064,7 @@ I("X30", 14,
 "use strict";
 
 /* ------------------------------------------------------------------ config */
-var VERSION   = "1.3.0";
+var VERSION   = "1.4.0";
 var BUILD     = "2026-09-12";
 var STORE_KEY = "vkp.nrp2025.v1";
 var DAY       = 86400000;
@@ -7961,6 +8358,9 @@ function exportConfigured(){
   ["#planScope","#planHours","#planWeeks","#planDate"].forEach(function(sel){
     var n = $(sel, doc); if (n) n.innerHTML = "&mdash;"; });
   var op = $("#onbPath", doc); if (op) op.innerHTML = "";
+  $$(".fig-svg", doc).forEach(function(n){ n.innerHTML = ""; n.removeAttribute("tabindex"); });
+  var fzb = $("#figZoomBody", doc); if (fzb) fzb.innerHTML = "";
+  var fzo = $("#figZoom", doc); if (fzo) fzo.setAttribute("hidden","");
   var ce = $("#certName", doc); if (ce) ce.removeAttribute("value");
   var sp = $("#sigPrev", doc); if (sp) sp.setAttribute("hidden","");
   var si = $("#sigImg", doc);  if (si) si.removeAttribute("src");
@@ -7979,6 +8379,328 @@ function exportConfigured(){
   a.download = "neonatal-resuscitation-2025-configured.html";
   document.body.appendChild(a); a.click();
   setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+}
+
+/* ------------------------------------------------------------------ search */
+var SIDX = null, SRES = [], SSEL = 0, SDEB = null;
+
+/* Blocks that would give away an answer are deliberately not indexed:
+   option lists, rationales, hints and remediation notes. Question stems are
+   indexed, because finding the question you half remember is useful and the
+   stem alone reveals nothing. */
+var SKIP_SEL = ".opts, .rationale, .hint, .remed, .fig-alt, .mastery-badge, .lock-note, .verdict";
+var TAKE_SEL = "p, li, h4, h5, td, th, .stem, .algo-t, .fig-t, caption";
+
+function buildSearchIndex(){
+  if (SIDX) return SIDX;
+  SIDX = [];
+  function harvest(scope, where){
+    $$(TAKE_SEL, scope).forEach(function(el){
+      if (el.closest(SKIP_SEL)) return;
+      var t = (el.textContent || "").replace(/\s+/g, " ").trim();
+      if (t.length < 14 || t.length > 900) return;
+      SIDX.push({ t: t, lc: t.toLowerCase(), el: el, w: where,
+                  head: /^H[45]$/.test(el.tagName) || el.classList.contains("fig-t") });
+    });
+  }
+  $$(".unit").forEach(function(sec){
+    var n = parseInt(sec.getAttribute("data-unit"), 10);
+    harvest(sec, { kind:"unit", n:n, part:partOf(n),
+                   title:"Unit " + n + " · " + (sec.getAttribute("data-title") || "") });
+  });
+  $$(".appendix").forEach(function(sec){
+    var h = $("h3", sec);
+    var label = "Appendix";
+    if (h){
+      var hc = h.cloneNode(true);
+      $$(".caret, .app-open-note", hc).forEach(function(x){ x.remove(); });
+      label = hc.textContent.replace(/\s+/g, " ").trim();
+    }
+    harvest(sec, { kind:"app", id:sec.id, title:label });
+  });
+  return SIDX;
+}
+
+function snippet(rec, terms){
+  var lc = rec.lc, at = -1;
+  for (var i=0;i<terms.length;i++){ var k = lc.indexOf(terms[i]); if (k >= 0 && (at < 0 || k < at)) at = k; }
+  if (at < 0) at = 0;
+  var from = Math.max(0, at - 55), to = Math.min(rec.t.length, from + 190);
+  var raw = (from > 0 ? "…" : "") + rec.t.slice(from, to) + (to < rec.t.length ? "…" : "");
+  var out = esc(raw);
+  terms.forEach(function(term){
+    if (!term) return;
+    var re = new RegExp("(" + term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
+    out = out.replace(re, "<mark>$1</mark>");
+  });
+  return out;
+}
+
+function runSearch(q){
+  var host = $("#srchResults"), count = $("#srchCount");
+  q = (q || "").trim();
+  SRES = []; SSEL = 0;
+  if (q.length < 2){
+    host.innerHTML = "";
+    count.textContent = "Type to search — doses, thresholds, a phrase you half remember.";
+    return;
+  }
+  var terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+  var idx = buildSearchIndex(), hits = [];
+  for (var i=0;i<idx.length;i++){
+    var rec = idx[i], ok = true, score = 0;
+    for (var j=0;j<terms.length;j++){
+      var at = rec.lc.indexOf(terms[j]);
+      if (at < 0){ ok = false; break; }
+      score += (at === 0 ? 6 : at < 60 ? 3 : 1);
+    }
+    if (!ok) continue;
+    if (rec.head) score += 8;
+    if (rec.w.kind === "unit" && isLocked(rec.w.n)) score -= 4;
+    hits.push({ rec: rec, score: score });
+  }
+  hits.sort(function(a,b){ return b.score - a.score; });
+  SRES = hits.slice(0, 40);
+
+  if (!SRES.length){
+    host.innerHTML = '<div class="srch-empty">Nothing matches <b>' + esc(q) + '</b>.<br>' +
+      'Try a single distinctive word — <i>meconium</i>, <i>epinephrine</i>, <i>hypothermia</i>.</div>';
+    count.textContent = "0 results";
+    return;
+  }
+  host.innerHTML = SRES.map(function(h, i){
+    var w = h.rec.w, locked = (w.kind === "unit") && isLocked(w.n);
+    var body = locked
+      ? '<div class="sr-note">In a locked unit — open Part ' + w.part + ' to read it.</div>'
+      : '<div class="sr-txt">' + snippet(h.rec, terms) + '</div>';
+    return '<button type="button" class="sr" role="option" data-i="' + i + '"' +
+      (w.part ? ' data-part="' + w.part + '"' : '') +
+      ' aria-selected="' + (i === 0 ? "true" : "false") + '">' +
+      '<span class="sr-where">' + esc(w.title) +
+      (locked ? ' <span class="sr-lock">Locked</span>' : '') + '</span>' + body + '</button>';
+  }).join("");
+  count.textContent = SRES.length + (SRES.length === 1 ? " result" : " results") +
+    (hits.length > SRES.length ? " (of " + hits.length + ")" : "");
+  $$(".sr", host).forEach(function(b){
+    b.addEventListener("click", function(){ gotoResult(parseInt(b.getAttribute("data-i"), 10)); });
+  });
+}
+
+function moveSel(d){
+  if (!SRES.length) return;
+  var items = $$(".sr", $("#srchResults"));
+  items[SSEL] && items[SSEL].setAttribute("aria-selected","false");
+  SSEL = (SSEL + d + items.length) % items.length;
+  var el = items[SSEL];
+  el.setAttribute("aria-selected","true");
+  el.scrollIntoView({ block:"nearest" });
+}
+
+function gotoResult(i){
+  var h = SRES[i]; if (!h) return;
+  var w = h.rec.w;
+  closeSearch();
+  if (w.kind === "unit"){
+    if (isLocked(w.n)){ goUnit(w.n); return; }
+    toggleUnit(UNITS[w.n].node, true);
+  } else {
+    var sec = document.getElementById(w.id);
+    if (sec && sec.getAttribute("data-open") !== "1") toggleApp(sec);
+  }
+  var el = h.rec.el;
+  setTimeout(function(){
+    el.scrollIntoView({ behavior:"smooth", block:"center" });
+    el.classList.remove("srch-hit");
+    void el.offsetWidth;
+    el.classList.add("srch-hit");
+    setTimeout(function(){ el.classList.remove("srch-hit"); }, 2000);
+  }, 60);
+}
+
+function openSearch(seed){
+  var o = $("#srch"); if (!o) return;
+  o.hidden = false;
+  document.body.style.overflow = "hidden";
+  var inp = $("#srchInput");
+  if (seed != null) inp.value = seed;
+  inp.focus(); inp.select();
+  runSearch(inp.value);
+}
+function closeSearch(){
+  var o = $("#srch"); if (!o || o.hidden) return;
+  o.hidden = true;
+  document.body.style.overflow = "";
+}
+function wireSearch(){
+  var o = $("#srch"); if (!o) return;
+  var inp = $("#srchInput");
+  inp.addEventListener("input", function(){
+    clearTimeout(SDEB);
+    SDEB = setTimeout(function(){ runSearch(inp.value); }, 110);
+  });
+  inp.addEventListener("keydown", function(e){
+    if (e.key === "ArrowDown"){ e.preventDefault(); moveSel(1); }
+    else if (e.key === "ArrowUp"){ e.preventDefault(); moveSel(-1); }
+    else if (e.key === "Enter"){ e.preventDefault(); gotoResult(SSEL); }
+  });
+  $("#srchClose").addEventListener("click", closeSearch);
+  o.addEventListener("click", function(e){ if (e.target === o) closeSearch(); });
+  var sb = $("#searchBtn"); if (sb) sb.addEventListener("click", function(){ openSearch(); });
+
+  document.addEventListener("keydown", function(e){
+    var tag = (e.target && e.target.tagName) || "";
+    var typing = /^(INPUT|TEXTAREA|SELECT)$/.test(tag) || (e.target && e.target.isContentEditable);
+    if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)){
+      e.preventDefault(); $("#srch").hidden ? openSearch() : closeSearch(); return;
+    }
+    if (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey){
+      if (!$("#onb").hidden || !$("#srch").hidden) return;
+      e.preventDefault(); openSearch(); return;
+    }
+    if (e.key === "Escape") closeSearch();
+  });
+}
+
+/* ------------------------------------------------------------------ figures */
+var FIGPAD = 14, FIGGAP = 34, FIGLH = 18, FIGFS = 13.5;
+var figMeasure = null;
+
+function measureText(t, weight){
+  if (!figMeasure){
+    var c = document.createElement("canvas");
+    figMeasure = c.getContext("2d");
+  }
+  figMeasure.font = (weight || 400) + " " + FIGFS + "px " +
+    getComputedStyle(document.body).fontFamily;
+  return figMeasure.measureText(t).width;
+}
+function wrapText(t, maxW, weight){
+  var words = String(t).split(/\s+/), lines = [], cur = "";
+  for (var i=0;i<words.length;i++){
+    var probe = cur ? cur + " " + words[i] : words[i];
+    if (cur && measureText(probe, weight) > maxW){ lines.push(cur); cur = words[i]; }
+    else cur = probe;
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+function nodeHeight(n, w){
+  var inner = w - FIGPAD*2;
+  var h = FIGPAD;
+  h += wrapText(n.t, inner, 700).length * (FIGLH + 2);
+  (n.l || []).forEach(function(line){ h += wrapText(line, inner, 400).length * FIGLH; });
+  if (n.l && n.l.length) h += 4;
+  return h + FIGPAD;
+}
+function figNodeSVG(n, x, y, w, h){
+  var inner = w - FIGPAD*2, out = [];
+  out.push('<g class="fn fn-' + n.k + '">');
+  out.push('<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h +
+           '" rx="' + (n.k === "ask" ? 18 : 10) + '"/>');
+  var ty = y + FIGPAD + FIGLH - 4;
+  wrapText(n.t, inner, 700).forEach(function(line){
+    out.push('<text class="ft" x="' + (x + FIGPAD) + '" y="' + ty + '">' + esc(line) + '</text>');
+    ty += FIGLH + 2;
+  });
+  if (n.l && n.l.length) ty += 2;
+  (n.l || []).forEach(function(src){
+    wrapText(src, inner, 400).forEach(function(line){
+      out.push('<text class="fl" x="' + (x + FIGPAD) + '" y="' + ty + '">' + esc(line) + '</text>');
+      ty += FIGLH;
+    });
+  });
+  out.push('</g>');
+  return out.join("");
+}
+function figSVG(spec){
+  var MW = spec.main, SW = spec.side || 0, W = spec.w;
+  var pos = {}, parts = [], y = 6, maxY = 0;
+
+  // place
+  spec.nodes.forEach(function(n){
+    var w = n.side ? SW : MW;
+    var h = nodeHeight(n, w);
+    if (n.side){
+      var a = pos[n.from];
+      var ny = a ? a.y + a.h + 14 : y;
+      pos[n.id] = { x: W - SW - 6, y: ny, w: w, h: h, n: n };
+    } else {
+      pos[n.id] = { x: 6, y: y, w: w, h: h, n: n };
+      y += h + FIGGAP;
+    }
+    maxY = Math.max(maxY, pos[n.id].y + h);
+  });
+
+  // arrows between consecutive main nodes
+  var mains = spec.nodes.filter(function(n){ return !n.side; });
+  for (var i=0;i<mains.length-1;i++){
+    var a = pos[mains[i].id], b = pos[mains[i+1].id];
+    var cx = a.x + a.w/2;
+    parts.push('<path class="fe" d="M' + cx + ' ' + (a.y+a.h) + ' V' + (b.y-7) + '" marker-end="url(#fa)"/>');
+    var lab = mains[i+1].edge, tag = mains[i+1].tag;
+    if (lab) parts.push('<text class="fedge" x="' + (cx+8) + '" y="' + (a.y+a.h+16) + '">' + esc(lab) + '</text>');
+    if (tag) parts.push('<text class="ftag" x="' + (cx+8) + '" y="' + (b.y-10) + '">' + esc(tag) + '</text>');
+  }
+  // elbows to side nodes
+  spec.nodes.forEach(function(n){
+    if (!n.side) return;
+    var a = pos[n.from], b = pos[n.id];
+    if (!a) return;
+    var sy = a.y + a.h/2, ey = b.y + Math.min(24, b.h/2);
+    parts.push('<path class="fe" d="M' + (a.x+a.w) + ' ' + sy + ' H' + (b.x-26) +
+               ' V' + ey + ' H' + (b.x-7) + '" marker-end="url(#fa)"/>');
+    if (n.edge){
+      var lines = wrapText(n.edge, SW, 400);
+      lines.forEach(function(line, k){
+        parts.push('<text class="fedge" x="' + (a.x+a.w+10) + '" y="' + (sy - 8 + k*14) + '">' + esc(line) + '</text>');
+      });
+    }
+  });
+  // nodes last so they sit above the lines
+  spec.nodes.forEach(function(n){
+    var p = pos[n.id];
+    parts.push(figNodeSVG(n, p.x, p.y, p.w, p.h));
+  });
+
+  var H = maxY + 10;
+  return '<svg class="figsvg" viewBox="0 0 ' + W + ' ' + H + '" role="img" ' +
+         'preserveAspectRatio="xMidYMin meet" xmlns="http://www.w3.org/2000/svg">' +
+         '<defs><marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" ' +
+         'markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z"/></marker></defs>' +
+         parts.join("") + '</svg>';
+}
+function renderFigures(){
+  $$(".fig-svg[data-figspec]").forEach(function(host){
+    var key = host.getAttribute("data-figspec");
+    var spec = (typeof FIGS !== "undefined") && FIGS[key];
+    if (!spec){ host.hidden = true; return; }
+    host.innerHTML = figSVG(spec);
+    var svg = $("svg", host);
+    var fig = host.closest(".fig");
+    var cap = fig && $(".fig-t", fig);
+    if (svg && cap) svg.setAttribute("aria-label", cap.textContent.trim() + " — a text version follows the diagram");
+    host.setAttribute("tabindex","0");
+    host.setAttribute("role","button");
+    host.setAttribute("aria-label","Open " + (cap ? cap.textContent.trim() : "diagram") + " full screen");
+    host.addEventListener("click", function(){ openFig(host); });
+    host.addEventListener("keydown", function(e){
+      if (e.key === "Enter" || e.key === " "){ e.preventDefault(); openFig(host); }
+    });
+  });
+}
+function openFig(host){
+  var o = $("#figZoom"); if (!o) return;
+  var fig = host.closest(".fig"), cap = fig && $(".fig-t", fig);
+  $("#figZoomTitle").textContent = cap ? cap.textContent.trim() : "Diagram";
+  $("#figZoomBody").innerHTML = host.innerHTML;
+  o.hidden = false;
+  document.body.style.overflow = "hidden";
+  $("#figZoomClose").focus();
+}
+function closeFig(){
+  var o = $("#figZoom"); if (!o || o.hidden) return;
+  o.hidden = true; $("#figZoomBody").innerHTML = "";
+  document.body.style.overflow = "";
 }
 
 /* ------------------------------------------------------------------ tables */
@@ -8052,13 +8774,20 @@ function boot(){
   wireFaculty();
   wireSignature();
   wireOnboarding();
+  wireSearch();
+  renderFigures();
   injectTableLabels();
 
   var dOpen = $("#drawerOpen"); if (dOpen) dOpen.addEventListener("click", openDrawer);
   var dClose = $("#drawerClose"); if (dClose) dClose.addEventListener("click", closeDrawer);
+  var fz = $("#figZoom");
+  if (fz){
+    $("#figZoomClose").addEventListener("click", closeFig);
+    fz.addEventListener("click", function(e){ if (e.target === fz) closeFig(); });
+  }
   var drawer = $("#drawer");
   if (drawer) drawer.addEventListener("click", function(e){ if (e.target === drawer) closeDrawer(); });
-  document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeDrawer(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape"){ closeFig(); closeDrawer(); } });
 
   $("#continueBtn").addEventListener("click", function(){
     var n = null;

@@ -25,7 +25,7 @@ sel = ['#continueBtn','#expandAll','#collapseAll','.toggle[aria-pressed="true"]'
        '.place-opts button','.opt','.unit-head','.mast-tag','.dash-status','.side a','.chip','.part-lede',
        '.tb-pct','.nb-title','.stat .sv','.stat .sl','.ring-val b','.arc-step b','.arc-step span',
        '.part-head .pk','.part-meta','.unit-head .un','.ubadge[data-s="not"]','.q .qh','.q .stem',
-       '.hint h6','.lede','.hc-note','.side .part-label','.lk','footer p','.crit .cnote','.legend','.pb-id > .pb-avatar','.pb-id > div > b','.pb-id > div > span','.pb-plan','.onb-step h2','.onb-kicker','.onb-list li','.onb-note','.plan-tile .pv','.plan-tile .pl','.onb-skip','.sigfield > label','.sigmeta']
+       '.hint h6','.lede','.hc-note','.side .part-label','.lk','footer p','.crit .cnote','.legend','.pb-id > .pb-avatar','.pb-id > div > b','.pb-id > div > span','.pb-plan','.onb-step h2','.onb-kicker','.onb-list li','.onb-note','.plan-tile .pv','.plan-tile .pl','.onb-skip','.sigfield > label','.sigmeta','.fig-t','.fig-alt > summary','.srch-foot','.srch-keys kbd']
 with sync_playwright() as pw:
     b=pw.chromium.launch()
     for scheme in ("light","dark"):
@@ -36,6 +36,7 @@ with sync_playwright() as pw:
         p.evaluate("()=>document.querySelector('#u1 .unit-head').click()"); p.wait_for_timeout(250)
         p.evaluate("()=>{var b=document.getElementById('pbEdit'); if(b) b.click();}"); p.wait_for_timeout(350)
         p.evaluate("()=>{for(var i=0;i<2;i++){document.getElementById('onbNext').click();}}"); p.wait_for_timeout(300)
+        p.evaluate("()=>{document.getElementById('onbSkip').click(); document.getElementById('searchBtn').click();}"); p.wait_for_timeout(350)
         print(f"\n--- {scheme.upper()} ---")
         for s_ in sel:
             r=p.evaluate("""(s)=>{const e=document.querySelector(s); if(!e) return null;

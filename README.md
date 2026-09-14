@@ -20,6 +20,8 @@ One self-contained HTML file. No framework, no CDN, no network request, no accou
 - **Three-criterion certification**: coverage + retention + applied performance
 - **Dual-track clinical content**: *ideal setting* and *resource-constrained setting* as equals
 - **India lens** in every clinical unit
+- Full-text search across every unit and appendix (Ctrl/Cmd K, or `/`)
+- Key algorithms drawn as scalable SVG, each with a text version and a full-screen view
 - Certificate as PNG and print-to-PDF
 
 ## Who it is for
@@ -95,6 +97,17 @@ See **Appendix C** for three delivery models, a worked flipped-classroom session
 ## Privacy
 
 All state lives in the learner's browser under one versioned `localStorage` key — progress, preferences, and the enrolment details if any were given. No account, no server, no analytics, no telemetry. Nothing is transmitted anywhere, and a completion record leaves the device only when the learner exports it and sends it themselves. The Digital Personal Data Protection Act 2023 is satisfied by collecting nothing centrally at all. One-click irreversible erase is provided.
+
+## Search
+
+`Ctrl`/`Cmd` + `K`, or just `/`, opens a palette that searches all 24 units and the appendices. Two deliberate limits:
+
+- **Rationales, hints, option lists and remediation notes are never indexed.** Searching must not become a way to read the answer to a checkpoint you have not attempted. Question stems are indexed, because finding the item you half remember is useful and a stem alone reveals nothing.
+- **Results from locked units are shown, but without their text** — you see that the answer lives in Unit 17 and which Part opens it, not the content itself. Gating that search could walk around would not be gating.
+
+## Diagrams
+
+The algorithms that matter most are drawn as inline SVG rather than monospace art: they scale, they stay legible on a phone, they follow the light and dark themes, and they open full screen on a tap. Every one keeps its original text version underneath, one click away, for screen readers and for anyone who prefers it. The remaining monospace blocks are unchanged and still readable.
 
 ## Rebuilding and testing it
 

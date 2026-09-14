@@ -1,0 +1,212 @@
+<script>
+/* ------------------------------------------------------------------
+   Figure specs. Rendered to inline SVG by figSVG() in the engine.
+   Kinds: band | ask | step | good | warn | crit | note
+   A node with side:1 hangs off node `from` in the right column.
+   `edge` labels the arrow that arrives at the node.
+   `tag`  is a small italic note beside the arrow above the node.
+   ------------------------------------------------------------------ */
+var FIGS = {
+
+"alg2025": {
+  w: 860, main: 470, side: 330,
+  nodes: [
+    {id:"pre", k:"band", t:"BEFORE BIRTH",
+     l:["Antenatal counselling · team briefing · equipment check",
+        "Agree the umbilical cord management plan"]},
+
+    {id:"q1", k:"ask", t:"Term? Good tone? Breathing or crying?",
+     tag:"BIRTH — start the clock"},
+
+    {id:"routine", k:"good", side:1, from:"q1", edge:"YES",
+     t:"Stay with the parent",
+     l:["Skin to skin, routine care, keep warm","Ongoing evaluation"]},
+
+    {id:"stepsA", k:"step", edge:"NO to any",
+     t:"A · INITIAL STEPS — at the radiant warmer",
+     l:["Warm · maintain 36.5–37.5 °C","Dry · position (sniffing)",
+        "Stimulate · clear the airway only if needed"]},
+
+    {id:"q2", k:"ask", t:"Apnoeic or gasping? OR heart rate <100/min?",
+     tag:"by 60 SECONDS"},
+
+    {id:"cpap", k:"good", side:1, from:"q2", edge:"NO — but laboured breathing or persistent cyanosis",
+     t:"Pulse oximeter",
+     l:["Oxygen if needed, starting at 30%","Consider CPAP 5–6 cmH₂O"]},
+
+    {id:"ppv", k:"warn", edge:"YES",
+     t:"B · VENTILATE — positive-pressure ventilation",
+     l:["30–60 breaths/min","PIP 25 · PEEP 5","FiO₂ by gestation",
+        "Pulse oximeter · consider cardiac monitor"]},
+
+    {id:"q3", k:"ask", t:"Heart rate <100/min?", tag:"after 30 s"},
+
+    {id:"wean", k:"note", side:1, from:"q3", edge:"NO",
+     t:"Continue PPV, then wean", l:["Post-resuscitation care"]},
+
+    {id:"mrsopa", k:"warn", edge:"YES",
+     t:"VENTILATION CORRECTIVE STEPS — MR SOPA",
+     l:["Consider a laryngeal mask or intubation","Attach a cardiac monitor"]},
+
+    {id:"q4", k:"ask", t:"Heart rate <60/min?",
+     tag:"after ≥30 s of ventilation that inflates the lungs"},
+
+    {id:"contppv", k:"note", side:1, from:"q4", edge:"NO", t:"Continue PPV"},
+
+    {id:"comp", k:"crit", edge:"YES",
+     t:"C · Intubate or place a laryngeal mask · CHEST COMPRESSIONS",
+     l:["3 : 1 with ventilation","90 compressions + 30 breaths per minute",
+        "FiO₂ 100%","UVC or intraosseous access"]},
+
+    {id:"q5", k:"ask", t:"Heart rate <60/min?", tag:"after 60 s"},
+
+    {id:"stopc", k:"note", side:1, from:"q5", edge:"NO",
+     t:"Stop compressions, continue PPV"},
+
+    {id:"epi", k:"crit", edge:"YES",
+     t:"D · EPINEPHRINE 0.02 mg/kg IV/IO (0.1 mg/mL)",
+     l:["Repeat every 3–5 minutes",
+        "If the heart rate is still <60: consider HYPOVOLAEMIA",
+        "and consider PNEUMOTHORAX"]}
+  ]
+},
+
+"apnoea": {
+  w: 720, main: 430, side: 250,
+  nodes: [
+    {id:"hyp", k:"band", t:"HYPOXIA BEGINS"},
+    {id:"rapid", k:"step", t:"Rapid breathing"},
+    {id:"prim", k:"warn", t:"PRIMARY APNOEA",
+     l:["Heart rate falls but is maintained","Blood pressure maintained",
+        "RESPONDS to stimulation alone"]},
+    {id:"gasp", k:"warn", edge:"hypoxia continues",
+     t:"GASPING",
+     l:["Deep, single or stacked inspirations","A terminal reflex sign — this is NOT breathing"]},
+    {id:"sec", k:"crit", t:"SECONDARY APNOEA",
+     l:["Heart rate falls further","Blood pressure falls",
+        "DOES NOT respond to stimulation","REQUIRES ASSISTED VENTILATION"]},
+    {id:"death", k:"crit", t:"Death, unless the lungs are ventilated"},
+    {id:"key", k:"note", side:1, from:"prim",
+     t:"At the bedside the two look identical",
+     l:["A limp, apnoeic baby gives you no clue which phase it is in.",
+        "If the baby is not breathing after the initial steps, assume",
+        "secondary apnoea and ventilate."]}
+  ]
+},
+
+"initeval": {
+  w: 760, main: 440, side: 280,
+  nodes: [
+    {id:"birth", k:"band", t:"BIRTH"},
+    {id:"q1", k:"ask", t:"Term gestation? Good muscle tone? Breathing or crying?"},
+    {id:"mother", k:"good", side:1, from:"q1", edge:"YES to all three",
+     t:"Stay with the mother",
+     l:["Delayed cord clamping","Skin to skin · dry · keep warm","Evaluate continuously"]},
+    {id:"warmer", k:"step", edge:"NO to any one",
+     t:"Move to the radiant warmer — the initial steps",
+     l:["Warm · dry · position · stimulate","Clear the airway only if it is obstructed"]},
+    {id:"q2", k:"ask", t:"Breathing well AND heart rate ≥100/min?", tag:"by 60 seconds"},
+    {id:"obs", k:"good", side:1, from:"q2", edge:"YES",
+     t:"Observe", l:["Pulse oximetry if cyanosed or laboured"]},
+    {id:"ppv", k:"crit", edge:"NO",
+     t:"Start positive-pressure ventilation",
+     l:["This is the intervention that saves newborn lives.","Do not delay it to suction, to stimulate again, or to call for help."]}
+  ]
+},
+
+"after30": {
+  w: 760, main: 450, side: 270,
+  nodes: [
+    {id:"start", k:"band", t:"AFTER 30 SECONDS OF PPV"},
+    {id:"q1", k:"ask", t:"Is the heart rate rising?"},
+    {id:"cont", k:"good", side:1, from:"q1", edge:"YES",
+     t:"Ventilation is working",
+     l:["Continue at 30–60 breaths/min","Wean as the heart rate and saturation rise"]},
+    {id:"chest", k:"ask", edge:"NO", t:"Is the chest moving with each breath?"},
+    {id:"mrsopa", k:"warn", edge:"NO",
+     t:"MR SOPA — in this order, reassessing after each",
+     l:["M  Mask adjust — reseat, do not press harder",
+        "R  Reposition the head to sniffing",
+        "S  Suction the mouth then the nose",
+        "O  Open the mouth slightly",
+        "P  Pressure increase in 5 cmH₂O steps",
+        "A  Alternative airway — laryngeal mask or tube"]},
+    {id:"moving", k:"warn", side:1, from:"chest", edge:"YES, but the heart rate is not rising",
+     t:"Chest moves, heart rate does not rise",
+     l:["Ventilate for a full 30 s of chest movement","Then reassess — this is the trigger for compressions"]},
+    {id:"q2", k:"ask", t:"Heart rate <60/min after ≥30 s of chest movement?"},
+    {id:"comp", k:"crit", edge:"YES",
+     t:"Alternative airway, then chest compressions",
+     l:["3 : 1 · 90 compressions + 30 breaths per minute","FiO₂ 100% · obtain vascular access"]}
+  ]
+}
+
+
+,
+
+"meconium": {
+  w: 800, main: 470, side: 300,
+  nodes: [
+    {id:"pre", k:"band", t:"BEFORE THE BIRTH",
+     l:["\u22652 qualified people present solely for the baby",
+        "Someone with intubation skills identified and IMMEDIATELY available",
+        "If other risk factors suggest a complex resuscitation, the full team is present"]},
+    {id:"q1", k:"ask", t:"Is the baby VIGOROUS?",
+     tag:"good tone AND good respiratory effort"},
+    {id:"vig", k:"good", side:1, from:"q1", edge:"YES",
+     t:"Stays with the parent",
+     l:["Routine initial steps. Nothing different.","No suction. No laryngoscopy."]},
+    {id:"nonvig", k:"warn", edge:"NO \u2014 non-vigorous",
+     t:"It may be reasonable to briefly defer cord clamping",
+     l:["while you begin the initial steps and stimulate"]},
+    {id:"noimp", k:"step", edge:"if there is no improvement",
+     t:"Clamp, move to the warmer, complete the initial steps",
+     l:["If secretions appear to OBSTRUCT the airway, clear the mouth",
+        "and nose with a bulb syringe \u2014 obstruction, not routine"]},
+    {id:"q2", k:"ask", t:"Apnoeic, OR gasping, OR heart rate <100 at 60 seconds?"},
+    {id:"ppv", k:"crit", edge:"YES", t:"START POSITIVE-PRESSURE VENTILATION"},
+    {id:"never", k:"note", side:1, from:"q2",
+     t:"Routine laryngoscopy \u00b1 tracheal suction is NOT recommended",
+     l:["Vigorous or not.",
+        "Intubation and tracheal suction ARE indicated if ventilation fails to",
+        "inflate the lungs and obstruction by thick secretions is suspected.",
+        "That is a rescue, not a routine."]}
+  ]
+},
+
+"preterm": {
+  w: 830, main: 490, side: 310,
+  nodes: [
+    {id:"start", k:"band", t:"PRETERM, AFTER THE INITIAL STEPS",
+     l:["Breathing spontaneously, HR \u2265100, but laboured or SpO\u2082 below target"]},
+    {id:"cpap", k:"step", t:"CPAP 5\u20136 cmH\u2082O by mask (T-piece or flow-inflating bag)",
+     l:["Early CPAP frequently AVOIDS intubation and ventilation",
+        "Watch for the trigemino-cardiac reflex: apnoea or bradycardia",
+        "immediately after the mask is applied"]},
+    {id:"better", k:"good", side:1, from:"cpap", edge:"IMPROVES",
+     t:"Nasal prongs or nasal mask",
+     l:["Continue CPAP","Monitor effort, heart rate and SpO\u2082"]},
+    {id:"q1", k:"ask", t:"Fails, OR heart rate <100, OR apnoeic or gasping?"},
+    {id:"ppv", k:"warn", edge:"YES",
+     t:"PPV \u2014 PEEP 5, PIP 20\u201325, FiO\u2082 by gestation",
+     l:["Use the LOWEST pressure that achieves and maintains HR >100.",
+        "Chest movement may NOT be visible in a preterm lung.",
+        "Face-mask maximum 30 cmH\u2082O. If that fails, a laryngeal mask or",
+        "tube often lets you ventilate at LOWER pressure.",
+        "A CO\u2082 detector between mask and device is a visual cue that you",
+        "have found the right position."]},
+    {id:"surf", k:"step", edge:"intubated for respiratory distress, or extremely preterm",
+     t:"SURFACTANT",
+     l:["INSURE \u2014 INtubate, SURfactant, Extubate to CPAP",
+        "LISA / MIST \u2014 thin catheter, the baby stays on CPAP",
+        "SALSA \u2014 via a laryngeal or supraglottic airway"]},
+    {id:"local", k:"note", side:1, from:"surf",
+     t:"Local rules decide",
+     l:["The criteria for \u201cCPAP failure\u201d are set locally.",
+        "If your team lacks surfactant, CPAP and warmth are still",
+        "the two interventions that change outcome."]}
+  ]
+}
+
+};
+</script>

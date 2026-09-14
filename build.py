@@ -21,13 +21,14 @@ units  = "\n".join(read(f) for f in UNIT_FILES)
 assess = read("70_assessment.html")
 apps   = read("80_appendices.html")
 examjs = read("85_examitems.html")
+figjs  = read("88_figs.html")
 script = read("90_script.html")
 
 shell = shell.replace("<!--UNITS-->", units)
 shell = shell.replace("<!--ASSESSMENT-->", assess)
 shell = shell.replace("<!--APPENDICES-->", apps)
 
-html = head + shell + examjs + script
+html = head + shell + examjs + figjs + script
 
 with open(OUT, "w", encoding="utf-8") as f:
     f.write(html)

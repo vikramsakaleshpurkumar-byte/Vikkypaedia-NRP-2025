@@ -7,7 +7,7 @@
 "use strict";
 
 /* ------------------------------------------------------------------ config */
-var VERSION   = "1.3.0";
+var VERSION   = "1.4.0";
 var BUILD     = "2026-09-12";
 var STORE_KEY = "vkp.nrp2025.v1";
 var DAY       = 86400000;
@@ -1301,6 +1301,9 @@ function exportConfigured(){
   ["#planScope","#planHours","#planWeeks","#planDate"].forEach(function(sel){
     var n = $(sel, doc); if (n) n.innerHTML = "&mdash;"; });
   var op = $("#onbPath", doc); if (op) op.innerHTML = "";
+  $$(".fig-svg", doc).forEach(function(n){ n.innerHTML = ""; n.removeAttribute("tabindex"); });
+  var fzb = $("#figZoomBody", doc); if (fzb) fzb.innerHTML = "";
+  var fzo = $("#figZoom", doc); if (fzo) fzo.setAttribute("hidden","");
   var ce = $("#certName", doc); if (ce) ce.removeAttribute("value");
   var sp = $("#sigPrev", doc); if (sp) sp.setAttribute("hidden","");
   var si = $("#sigImg", doc);  if (si) si.removeAttribute("src");
@@ -1319,6 +1322,328 @@ function exportConfigured(){
   a.download = "neonatal-resuscitation-2025-configured.html";
   document.body.appendChild(a); a.click();
   setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+}
+
+/* ------------------------------------------------------------------ search */
+var SIDX = null, SRES = [], SSEL = 0, SDEB = null;
+
+/* Blocks that would give away an answer are deliberately not indexed:
+   option lists, rationales, hints and remediation notes. Question stems are
+   indexed, because finding the question you half remember is useful and the
+   stem alone reveals nothing. */
+var SKIP_SEL = ".opts, .rationale, .hint, .remed, .fig-alt, .mastery-badge, .lock-note, .verdict";
+var TAKE_SEL = "p, li, h4, h5, td, th, .stem, .algo-t, .fig-t, caption";
+
+function buildSearchIndex(){
+  if (SIDX) return SIDX;
+  SIDX = [];
+  function harvest(scope, where){
+    $$(TAKE_SEL, scope).forEach(function(el){
+      if (el.closest(SKIP_SEL)) return;
+      var t = (el.textContent || "").replace(/\s+/g, " ").trim();
+      if (t.length < 14 || t.length > 900) return;
+      SIDX.push({ t: t, lc: t.toLowerCase(), el: el, w: where,
+                  head: /^H[45]$/.test(el.tagName) || el.classList.contains("fig-t") });
+    });
+  }
+  $$(".unit").forEach(function(sec){
+    var n = parseInt(sec.getAttribute("data-unit"), 10);
+    harvest(sec, { kind:"unit", n:n, part:partOf(n),
+                   title:"Unit " + n + " · " + (sec.getAttribute("data-title") || "") });
+  });
+  $$(".appendix").forEach(function(sec){
+    var h = $("h3", sec);
+    var label = "Appendix";
+    if (h){
+      var hc = h.cloneNode(true);
+      $$(".caret, .app-open-note", hc).forEach(function(x){ x.remove(); });
+      label = hc.textContent.replace(/\s+/g, " ").trim();
+    }
+    harvest(sec, { kind:"app", id:sec.id, title:label });
+  });
+  return SIDX;
+}
+
+function snippet(rec, terms){
+  var lc = rec.lc, at = -1;
+  for (var i=0;i<terms.length;i++){ var k = lc.indexOf(terms[i]); if (k >= 0 && (at < 0 || k < at)) at = k; }
+  if (at < 0) at = 0;
+  var from = Math.max(0, at - 55), to = Math.min(rec.t.length, from + 190);
+  var raw = (from > 0 ? "…" : "") + rec.t.slice(from, to) + (to < rec.t.length ? "…" : "");
+  var out = esc(raw);
+  terms.forEach(function(term){
+    if (!term) return;
+    var re = new RegExp("(" + term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
+    out = out.replace(re, "<mark>$1</mark>");
+  });
+  return out;
+}
+
+function runSearch(q){
+  var host = $("#srchResults"), count = $("#srchCount");
+  q = (q || "").trim();
+  SRES = []; SSEL = 0;
+  if (q.length < 2){
+    host.innerHTML = "";
+    count.textContent = "Type to search — doses, thresholds, a phrase you half remember.";
+    return;
+  }
+  var terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+  var idx = buildSearchIndex(), hits = [];
+  for (var i=0;i<idx.length;i++){
+    var rec = idx[i], ok = true, score = 0;
+    for (var j=0;j<terms.length;j++){
+      var at = rec.lc.indexOf(terms[j]);
+      if (at < 0){ ok = false; break; }
+      score += (at === 0 ? 6 : at < 60 ? 3 : 1);
+    }
+    if (!ok) continue;
+    if (rec.head) score += 8;
+    if (rec.w.kind === "unit" && isLocked(rec.w.n)) score -= 4;
+    hits.push({ rec: rec, score: score });
+  }
+  hits.sort(function(a,b){ return b.score - a.score; });
+  SRES = hits.slice(0, 40);
+
+  if (!SRES.length){
+    host.innerHTML = '<div class="srch-empty">Nothing matches <b>' + esc(q) + '</b>.<br>' +
+      'Try a single distinctive word — <i>meconium</i>, <i>epinephrine</i>, <i>hypothermia</i>.</div>';
+    count.textContent = "0 results";
+    return;
+  }
+  host.innerHTML = SRES.map(function(h, i){
+    var w = h.rec.w, locked = (w.kind === "unit") && isLocked(w.n);
+    var body = locked
+      ? '<div class="sr-note">In a locked unit — open Part ' + w.part + ' to read it.</div>'
+      : '<div class="sr-txt">' + snippet(h.rec, terms) + '</div>';
+    return '<button type="button" class="sr" role="option" data-i="' + i + '"' +
+      (w.part ? ' data-part="' + w.part + '"' : '') +
+      ' aria-selected="' + (i === 0 ? "true" : "false") + '">' +
+      '<span class="sr-where">' + esc(w.title) +
+      (locked ? ' <span class="sr-lock">Locked</span>' : '') + '</span>' + body + '</button>';
+  }).join("");
+  count.textContent = SRES.length + (SRES.length === 1 ? " result" : " results") +
+    (hits.length > SRES.length ? " (of " + hits.length + ")" : "");
+  $$(".sr", host).forEach(function(b){
+    b.addEventListener("click", function(){ gotoResult(parseInt(b.getAttribute("data-i"), 10)); });
+  });
+}
+
+function moveSel(d){
+  if (!SRES.length) return;
+  var items = $$(".sr", $("#srchResults"));
+  items[SSEL] && items[SSEL].setAttribute("aria-selected","false");
+  SSEL = (SSEL + d + items.length) % items.length;
+  var el = items[SSEL];
+  el.setAttribute("aria-selected","true");
+  el.scrollIntoView({ block:"nearest" });
+}
+
+function gotoResult(i){
+  var h = SRES[i]; if (!h) return;
+  var w = h.rec.w;
+  closeSearch();
+  if (w.kind === "unit"){
+    if (isLocked(w.n)){ goUnit(w.n); return; }
+    toggleUnit(UNITS[w.n].node, true);
+  } else {
+    var sec = document.getElementById(w.id);
+    if (sec && sec.getAttribute("data-open") !== "1") toggleApp(sec);
+  }
+  var el = h.rec.el;
+  setTimeout(function(){
+    el.scrollIntoView({ behavior:"smooth", block:"center" });
+    el.classList.remove("srch-hit");
+    void el.offsetWidth;
+    el.classList.add("srch-hit");
+    setTimeout(function(){ el.classList.remove("srch-hit"); }, 2000);
+  }, 60);
+}
+
+function openSearch(seed){
+  var o = $("#srch"); if (!o) return;
+  o.hidden = false;
+  document.body.style.overflow = "hidden";
+  var inp = $("#srchInput");
+  if (seed != null) inp.value = seed;
+  inp.focus(); inp.select();
+  runSearch(inp.value);
+}
+function closeSearch(){
+  var o = $("#srch"); if (!o || o.hidden) return;
+  o.hidden = true;
+  document.body.style.overflow = "";
+}
+function wireSearch(){
+  var o = $("#srch"); if (!o) return;
+  var inp = $("#srchInput");
+  inp.addEventListener("input", function(){
+    clearTimeout(SDEB);
+    SDEB = setTimeout(function(){ runSearch(inp.value); }, 110);
+  });
+  inp.addEventListener("keydown", function(e){
+    if (e.key === "ArrowDown"){ e.preventDefault(); moveSel(1); }
+    else if (e.key === "ArrowUp"){ e.preventDefault(); moveSel(-1); }
+    else if (e.key === "Enter"){ e.preventDefault(); gotoResult(SSEL); }
+  });
+  $("#srchClose").addEventListener("click", closeSearch);
+  o.addEventListener("click", function(e){ if (e.target === o) closeSearch(); });
+  var sb = $("#searchBtn"); if (sb) sb.addEventListener("click", function(){ openSearch(); });
+
+  document.addEventListener("keydown", function(e){
+    var tag = (e.target && e.target.tagName) || "";
+    var typing = /^(INPUT|TEXTAREA|SELECT)$/.test(tag) || (e.target && e.target.isContentEditable);
+    if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)){
+      e.preventDefault(); $("#srch").hidden ? openSearch() : closeSearch(); return;
+    }
+    if (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey){
+      if (!$("#onb").hidden || !$("#srch").hidden) return;
+      e.preventDefault(); openSearch(); return;
+    }
+    if (e.key === "Escape") closeSearch();
+  });
+}
+
+/* ------------------------------------------------------------------ figures */
+var FIGPAD = 14, FIGGAP = 34, FIGLH = 18, FIGFS = 13.5;
+var figMeasure = null;
+
+function measureText(t, weight){
+  if (!figMeasure){
+    var c = document.createElement("canvas");
+    figMeasure = c.getContext("2d");
+  }
+  figMeasure.font = (weight || 400) + " " + FIGFS + "px " +
+    getComputedStyle(document.body).fontFamily;
+  return figMeasure.measureText(t).width;
+}
+function wrapText(t, maxW, weight){
+  var words = String(t).split(/\s+/), lines = [], cur = "";
+  for (var i=0;i<words.length;i++){
+    var probe = cur ? cur + " " + words[i] : words[i];
+    if (cur && measureText(probe, weight) > maxW){ lines.push(cur); cur = words[i]; }
+    else cur = probe;
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+function nodeHeight(n, w){
+  var inner = w - FIGPAD*2;
+  var h = FIGPAD;
+  h += wrapText(n.t, inner, 700).length * (FIGLH + 2);
+  (n.l || []).forEach(function(line){ h += wrapText(line, inner, 400).length * FIGLH; });
+  if (n.l && n.l.length) h += 4;
+  return h + FIGPAD;
+}
+function figNodeSVG(n, x, y, w, h){
+  var inner = w - FIGPAD*2, out = [];
+  out.push('<g class="fn fn-' + n.k + '">');
+  out.push('<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h +
+           '" rx="' + (n.k === "ask" ? 18 : 10) + '"/>');
+  var ty = y + FIGPAD + FIGLH - 4;
+  wrapText(n.t, inner, 700).forEach(function(line){
+    out.push('<text class="ft" x="' + (x + FIGPAD) + '" y="' + ty + '">' + esc(line) + '</text>');
+    ty += FIGLH + 2;
+  });
+  if (n.l && n.l.length) ty += 2;
+  (n.l || []).forEach(function(src){
+    wrapText(src, inner, 400).forEach(function(line){
+      out.push('<text class="fl" x="' + (x + FIGPAD) + '" y="' + ty + '">' + esc(line) + '</text>');
+      ty += FIGLH;
+    });
+  });
+  out.push('</g>');
+  return out.join("");
+}
+function figSVG(spec){
+  var MW = spec.main, SW = spec.side || 0, W = spec.w;
+  var pos = {}, parts = [], y = 6, maxY = 0;
+
+  // place
+  spec.nodes.forEach(function(n){
+    var w = n.side ? SW : MW;
+    var h = nodeHeight(n, w);
+    if (n.side){
+      var a = pos[n.from];
+      var ny = a ? a.y + a.h + 14 : y;
+      pos[n.id] = { x: W - SW - 6, y: ny, w: w, h: h, n: n };
+    } else {
+      pos[n.id] = { x: 6, y: y, w: w, h: h, n: n };
+      y += h + FIGGAP;
+    }
+    maxY = Math.max(maxY, pos[n.id].y + h);
+  });
+
+  // arrows between consecutive main nodes
+  var mains = spec.nodes.filter(function(n){ return !n.side; });
+  for (var i=0;i<mains.length-1;i++){
+    var a = pos[mains[i].id], b = pos[mains[i+1].id];
+    var cx = a.x + a.w/2;
+    parts.push('<path class="fe" d="M' + cx + ' ' + (a.y+a.h) + ' V' + (b.y-7) + '" marker-end="url(#fa)"/>');
+    var lab = mains[i+1].edge, tag = mains[i+1].tag;
+    if (lab) parts.push('<text class="fedge" x="' + (cx+8) + '" y="' + (a.y+a.h+16) + '">' + esc(lab) + '</text>');
+    if (tag) parts.push('<text class="ftag" x="' + (cx+8) + '" y="' + (b.y-10) + '">' + esc(tag) + '</text>');
+  }
+  // elbows to side nodes
+  spec.nodes.forEach(function(n){
+    if (!n.side) return;
+    var a = pos[n.from], b = pos[n.id];
+    if (!a) return;
+    var sy = a.y + a.h/2, ey = b.y + Math.min(24, b.h/2);
+    parts.push('<path class="fe" d="M' + (a.x+a.w) + ' ' + sy + ' H' + (b.x-26) +
+               ' V' + ey + ' H' + (b.x-7) + '" marker-end="url(#fa)"/>');
+    if (n.edge){
+      var lines = wrapText(n.edge, SW, 400);
+      lines.forEach(function(line, k){
+        parts.push('<text class="fedge" x="' + (a.x+a.w+10) + '" y="' + (sy - 8 + k*14) + '">' + esc(line) + '</text>');
+      });
+    }
+  });
+  // nodes last so they sit above the lines
+  spec.nodes.forEach(function(n){
+    var p = pos[n.id];
+    parts.push(figNodeSVG(n, p.x, p.y, p.w, p.h));
+  });
+
+  var H = maxY + 10;
+  return '<svg class="figsvg" viewBox="0 0 ' + W + ' ' + H + '" role="img" ' +
+         'preserveAspectRatio="xMidYMin meet" xmlns="http://www.w3.org/2000/svg">' +
+         '<defs><marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" ' +
+         'markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z"/></marker></defs>' +
+         parts.join("") + '</svg>';
+}
+function renderFigures(){
+  $$(".fig-svg[data-figspec]").forEach(function(host){
+    var key = host.getAttribute("data-figspec");
+    var spec = (typeof FIGS !== "undefined") && FIGS[key];
+    if (!spec){ host.hidden = true; return; }
+    host.innerHTML = figSVG(spec);
+    var svg = $("svg", host);
+    var fig = host.closest(".fig");
+    var cap = fig && $(".fig-t", fig);
+    if (svg && cap) svg.setAttribute("aria-label", cap.textContent.trim() + " — a text version follows the diagram");
+    host.setAttribute("tabindex","0");
+    host.setAttribute("role","button");
+    host.setAttribute("aria-label","Open " + (cap ? cap.textContent.trim() : "diagram") + " full screen");
+    host.addEventListener("click", function(){ openFig(host); });
+    host.addEventListener("keydown", function(e){
+      if (e.key === "Enter" || e.key === " "){ e.preventDefault(); openFig(host); }
+    });
+  });
+}
+function openFig(host){
+  var o = $("#figZoom"); if (!o) return;
+  var fig = host.closest(".fig"), cap = fig && $(".fig-t", fig);
+  $("#figZoomTitle").textContent = cap ? cap.textContent.trim() : "Diagram";
+  $("#figZoomBody").innerHTML = host.innerHTML;
+  o.hidden = false;
+  document.body.style.overflow = "hidden";
+  $("#figZoomClose").focus();
+}
+function closeFig(){
+  var o = $("#figZoom"); if (!o || o.hidden) return;
+  o.hidden = true; $("#figZoomBody").innerHTML = "";
+  document.body.style.overflow = "";
 }
 
 /* ------------------------------------------------------------------ tables */
@@ -1392,13 +1717,20 @@ function boot(){
   wireFaculty();
   wireSignature();
   wireOnboarding();
+  wireSearch();
+  renderFigures();
   injectTableLabels();
 
   var dOpen = $("#drawerOpen"); if (dOpen) dOpen.addEventListener("click", openDrawer);
   var dClose = $("#drawerClose"); if (dClose) dClose.addEventListener("click", closeDrawer);
+  var fz = $("#figZoom");
+  if (fz){
+    $("#figZoomClose").addEventListener("click", closeFig);
+    fz.addEventListener("click", function(e){ if (e.target === fz) closeFig(); });
+  }
   var drawer = $("#drawer");
   if (drawer) drawer.addEventListener("click", function(e){ if (e.target === drawer) closeDrawer(); });
-  document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeDrawer(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape"){ closeFig(); closeDrawer(); } });
 
   $("#continueBtn").addEventListener("click", function(){
     var n = null;
