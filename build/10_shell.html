@@ -8,6 +8,7 @@
     <span class="nb-title">Neonatal Resuscitation 2025</span>
     <span class="tb-right">
       <span class="tb-pct" id="tbPct">0% mastered</span>
+      <button class="duebtn" id="dueBtn" type="button" hidden title="Spaced-retrieval items due now"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/></svg><b id="dueCount">0</b><span class="dl"> due</span></button>
       <button class="iconbtn" id="searchBtn" aria-label="Search the module" title="Search — Ctrl K or /"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5 L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       <button class="iconbtn" id="themeBtnM" aria-label="Change theme" title="Light / dark / system"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor"/></svg></button>
     </span>
@@ -60,6 +61,7 @@
             <input type="email" id="enEmail" placeholder="you@example.com" autocomplete="email">
           </div>
         </div>
+        <p class="onb-note" id="enPassport" hidden><b>Filled from your Vikkypaedia Passport.</b> You enrolled in another Vikkypaedia module in this browser. Check the details, then continue.</p>
         <p class="onb-note" id="enErr" hidden style="border-color:var(--red);color:var(--red);background:var(--red-soft)"></p>
         <div class="onb-note"><b>Nothing leaves this device.</b> There is no account and no server: these details are written to this browser&rsquo;s local storage only, so they can be printed on your certificate and included in a completion record you choose to export and send. Nothing is transmitted, and you can erase all of it with one click at the bottom of the final assessment. The Digital Personal Data Protection Act 2023 is satisfied here by collecting nothing centrally at all.</div>
       </section>
@@ -246,11 +248,19 @@
         <span class="dash-status" id="dashStatus">Not started</span>
       </div>
       <p class="bar"><i id="dashBar" style="width:0%"></i></p>
+      <div class="nextstep" id="nextStep">
+        <div class="ns-txt"><span class="ns-k">Your next step</span><b id="nsTitle">Start Unit 1</b><span id="nsDesc"></span><span class="ns-ret" id="nsReturn" hidden></span></div>
+        <button class="btn" id="nsGo" type="button">Open</button>
+      </div>
       <div class="statgrid">
         <div class="stat"><span class="sl">Units</span><span class="sv" id="dashLeft">0 of 24 units mastered</span></div>
         <div class="stat"><span class="sl">Checkpoints</span><span class="sv" id="dashRight">0 of 48 checkpoints</span></div>
         <div class="stat"><span class="sl">Parts open</span><span class="sv" id="statParts">A of A&ndash;E</span></div>
         <div class="stat"><span class="sl">Retention</span><span class="sv" id="statRet">Nothing due</span></div>
+      </div>
+      <div class="loopgrid">
+        <div class="stat days"><span class="sl">Study days &middot; last 14</span><div class="daystrip" id="dayStrip" aria-hidden="true"></div><span class="sv sm" id="dayWeek"></span><span class="sn" id="dayBest"></span></div>
+        <div class="stat"><span class="sl">Calibration</span><span class="sv sm" id="statCal">Rate your confidence to see this</span><span class="sn" id="statCalNote"></span></div>
       </div>
       <div class="ugrid" id="ugrid" role="list" aria-label="Unit status"></div>
       <div class="legend">
@@ -346,6 +356,24 @@
 </div>
 
 <div class="printroot" id="printRoot"></div>
+<div class="printdoc" id="printDoc"></div>
+
+<!-- review runner: the whole spaced-retrieval queue, one item at a time -->
+<div class="rvw noprint" id="rvw" role="dialog" aria-modal="true" aria-labelledby="rvwTitle" hidden>
+  <div class="rvw-card">
+    <div class="rvw-top">
+      <h2 id="rvwTitle">Review from memory</h2>
+      <button type="button" class="iconbtn sm" id="rvwClose" aria-label="Close review">&#10005;</button>
+    </div>
+    <p class="rvw-prog" id="rvwProg"></p>
+    <p class="bar"><i id="rvwBar" style="width:0%"></i></p>
+    <div id="rvwSlot"></div>
+    <div class="btnrow"><button type="button" class="btn" id="rvwNext" hidden>Next item</button></div>
+    <p class="rvw-keys">Keys: 1&ndash;4 to answer &middot; Esc to close</p>
+  </div>
+</div>
+<div class="toasthost noprint" id="toastHost" aria-live="polite"></div>
+<div class="sr-only" id="liveRegion" aria-live="assertive" aria-atomic="true"></div>
 
 <footer class="noprint">
   <div class="wrap">

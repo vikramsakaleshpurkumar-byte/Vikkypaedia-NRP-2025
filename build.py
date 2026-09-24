@@ -23,6 +23,18 @@ apps   = read("80_appendices.html")
 examjs = read("85_examitems.html")
 figjs  = read("88_figs.html")
 script = read("90_script.html")
+loops_css = read("06_loops.css")
+loops_js  = read("89_loops.js")
+
+# Vikkypaedia Standard v2: learning loops are shared across modules
+import base64
+_sig = os.path.join(B, "signature.png")
+if os.path.exists(_sig) and "@@SIGNATURE@@" in script:
+    script = script.replace("@@SIGNATURE@@", "data:image/png;base64," + base64.b64encode(open(_sig, "rb").read()).decode())
+assert "/*@@LOOPS@@*/" in script, "engine is missing the LOOPS marker"
+script = script.replace("/*@@LOOPS@@*/", loops_js)
+assert head.count("</style>") >= 1
+head = head.replace("</style>", loops_css + "\n</style>", 1)
 
 shell = shell.replace("<!--UNITS-->", units)
 shell = shell.replace("<!--ASSESSMENT-->", assess)
@@ -58,7 +70,7 @@ for b in blocks[1:]:
     if n != 1:
         errs.append("question %s has %d correct options (expected 1)" % (qid, n))
 
-for marker in ["<!--UNITS-->", "<!--ASSESSMENT-->", "<!--APPENDICES-->", "PLACEHOLDER", "TODO", "TKTK"]:
+for marker in ["@@SIGNATURE@@", "/*@@LOOPS@@*/", "<!--UNITS-->", "<!--ASSESSMENT-->", "<!--APPENDICES-->", "PLACEHOLDER", "TODO", "TKTK"]:
     if marker in html:
         errs.append("leftover marker: %s" % marker)
 

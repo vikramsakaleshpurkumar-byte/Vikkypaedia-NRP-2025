@@ -44,7 +44,7 @@ with sync_playwright() as pw:
       "()=>!document.getElementById('certGate').hidden")
 
     print("\n== SIGNATURE UPLOAD ==")
-    check("field present and preview hidden", p.evaluate("()=>!!document.getElementById('fPhoto') && document.getElementById('sigPrev').hidden"))
+    check("field present and default signature previewed", p.evaluate("()=>!!document.getElementById('fPhoto') && !document.getElementById('sigPrev').hidden && document.getElementById('sigImg').src.startsWith('data:image/png')"))
     p.set_input_files("#fPhoto", os.path.join(ROOT,"tests","sig-test.png")); p.wait_for_timeout(900)
     st=p.evaluate("""()=>{const s=JSON.parse(localStorage.getItem('vkp.nrp2025.v1'));
       const d=(s.settings&&s.settings.signPhoto)||'';
@@ -93,7 +93,8 @@ with sync_playwright() as pw:
         p.click("#exportCopy")
     out="/tmp/exported-sig.html"; dl.value.save_as(out); html=open(out,encoding='utf-8').read()
     check("seed carries the signature", "__VKP_SEED__" in html and "signPhoto" in html)
-    check("image not duplicated in the DOM", html.count("data:image/png;base64") == 1, html.count("data:image/png;base64"))
+    # one copy is the engine's built-in default, one is the seed; the DOM itself must hold none
+    check("image not duplicated in the DOM", html.count("data:image/png;base64") == 2 and 'id="sigImg" src=' not in html, html.count("data:image/png;base64"))
     ctx2=b.new_context(); ctx2.add_init_script(SKIP)
     e=ctx2.new_page(); eerrs=[]; e.on("pageerror", lambda x: eerrs.append(str(x)))
     e.goto("file:///tmp/exported-sig.html"); e.wait_for_timeout(900)

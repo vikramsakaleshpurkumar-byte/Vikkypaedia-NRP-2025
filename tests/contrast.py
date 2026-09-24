@@ -25,7 +25,7 @@ sel = ['#continueBtn','#expandAll','#collapseAll','.toggle[aria-pressed="true"]'
        '.place-opts button','.opt','.unit-head','.mast-tag','.dash-status','.side a','.chip','.part-lede',
        '.tb-pct','.nb-title','.stat .sv','.stat .sl','.ring-val b','.arc-step b','.arc-step span',
        '.part-head .pk','.part-meta','.unit-head .un','.ubadge[data-s="not"]','.q .qh','.q .stem',
-       '.hint h6','.lede','.hc-note','.side .part-label','.lk','footer p','.crit .cnote','.legend','.pb-id > .pb-avatar','.pb-id > div > b','.pb-id > div > span','.pb-plan','.onb-step h2','.onb-kicker','.onb-list li','.onb-note','.plan-tile .pv','.plan-tile .pl','.onb-skip','.sigfield > label','.sigmeta','.fig-t','.fig-alt > summary','.srch-foot','.srch-keys kbd']
+       '.hint h6','.lede','.hc-note','.side .part-label','.lk','footer p','.crit .cnote','.legend','.pb-id > .pb-avatar','.pb-id > div > b','.pb-id > div > span','.pb-plan','.onb-step h2','.onb-kicker','.onb-list li','.onb-note','.plan-tile .pv','.plan-tile .pl','.onb-skip','.sigfield > label','.sigmeta','.fig-t','.fig-alt > summary','.srch-foot','.srch-keys kbd','.nextstep .ns-k','#nsTitle','#nsDesc','.stat .sn','#dayWeek','.conf .conf-l','.conf button[aria-pressed="false"]','.conf button[aria-pressed="true"]','.cw-flag','.cw-flag b','#dueBtn','.printbtn']
 with sync_playwright() as pw:
     b=pw.chromium.launch()
     for scheme in ("light","dark"):
@@ -34,6 +34,7 @@ with sync_playwright() as pw:
         p = _c.new_page()
         p.goto(MODULE_URL); p.wait_for_timeout(600)
         p.evaluate("()=>document.querySelector('#u1 .unit-head').click()"); p.wait_for_timeout(250)
+        p.evaluate("()=>{const q=document.querySelector('.q[data-q=\"1.1\"]');q.querySelector('.conf button[data-cf=\"s\"]').click();q.querySelector('.opt:not([data-c=\"1\"])').click();document.querySelector('.q[data-q=\"1.2\"] .conf button[data-cf=\"f\"]').click();document.getElementById('dueBtn').hidden=false;document.querySelector('#appE h3').click();}"); p.wait_for_timeout(300)
         p.evaluate("()=>{var b=document.getElementById('pbEdit'); if(b) b.click();}"); p.wait_for_timeout(350)
         p.evaluate("()=>{for(var i=0;i<2;i++){document.getElementById('onbNext').click();}}"); p.wait_for_timeout(300)
         p.evaluate("()=>{document.getElementById('onbSkip').click(); document.getElementById('searchBtn').click();}"); p.wait_for_timeout(350)

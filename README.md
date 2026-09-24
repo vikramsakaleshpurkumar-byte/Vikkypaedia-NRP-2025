@@ -94,6 +94,22 @@ Once all three criteria are met, **Download completion record** produces a small
 
 See **Appendix C** for three delivery models, a worked flipped-classroom session plan, feedback structures, the six-domain rubric, standard-setting worksheets and a Kirkpatrick evaluation plan. See **Appendix B** for four branching simulation scenarios that run on a doll and printed vital-sign cards.
 
+## Learning loops (Vikkypaedia Standard v2 · module v1.5.0)
+
+Every loop is tied to mastery; nothing rewards clicking.
+
+| Loop | What the learner sees | Why |
+|---|---|---|
+| **Review queue** | A "N due" badge in the topbar opens a runner that works the whole spaced-retrieval queue, one item at a time (keys 1–4, Esc) | Retention is one of the three certification criteria; this makes it one tap away |
+| **Next step** | One named action on the dashboard — clear reviews, revisit a confident-and-wrong item, finish the unit in progress, start the next unit, or sit the assessment — plus when the next check returns | Removes the "what now?" decision that stalls self-paced learners |
+| **Confidence** | "Sure / Fairly sure / Guessing" before answering; *confident and wrong* is flagged; a calibration tile reports how often "sure" was right | Hypercorrection effect; calibration is a clinical safety skill |
+| **Study days** | A 14-day strip, days this week against the plan, and a best run — never reset, never shamed | Habit without punishing night duty |
+| **Moments** | A brief notice when a unit is mastered or a Part unlocks | Recognition of earned progress only |
+| **Passport** | Progress is summarised into `vkp.passport.v1`, shared by every Vikkypaedia module on this site; a second module pre-fills enrolment from it | One learner across modules, still no server |
+| **Print any appendix** | A print button on each appendix — the drug and equipment annex prints on A4 portrait for the resus trolley | Safety material should never be screen-only |
+
+Rejected by design: points, badges, leaderboards, streak resets.
+
 ## Privacy
 
 All state lives in the learner's browser under one versioned `localStorage` key — progress, preferences, and the enrolment details if any were given. No account, no server, no analytics, no telemetry. Nothing is transmitted anywhere, and a completion record leaves the device only when the learner exports it and sends it themselves. The Digital Personal Data Protection Act 2023 is satisfied by collecting nothing centrally at all. One-click irreversible erase is provided.

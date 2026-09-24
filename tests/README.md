@@ -17,6 +17,7 @@ python tests/test_enrol.py
 python tests/contrast.py
 python tests/offline_test.py
 python tests/print_test.py
+python tests/test_loops.py
 ```
 
 Each prints `OK` / `FAIL` per check and ends with `FAILURES: none` when the build is sound.
@@ -33,6 +34,7 @@ Each prints `OK` / `FAIL` per check and ends with `FAILURES: none` when the buil
 | `contrast.py` | Computed foreground/background ratio on every text element that matters, in light **and** dark. Everything must read `ok` (≥4.5:1) |
 | `offline_test.py` | Zero non-`file://` requests on load, on opening a unit and on switching theme |
 | `test_sig.py` | The faculty signature upload: downscaling to 600 px, matting the paper out to transparency while keeping the ink, the preview and its stored size, the image drawn on the certificate canvas and into the print sheet, removal, and an exported copy that carries the signature in its seed without duplicating it in the DOM |
+| `test_loops.py` | Standard v2 loops: one confidence bar per item, the confident-and-wrong flag, calibration, study days, the next-step card, the due badge and review runner (keys, Escape, scroll lock), unit and Part unlock notices, the Passport write and prefill, print-any-appendix, options flowing as text on mobile, and export hygiene |
 | `print_test.py` | The certificate renders and the printed PDF is exactly one A4 page |
 
 ## Three things that will bite you
