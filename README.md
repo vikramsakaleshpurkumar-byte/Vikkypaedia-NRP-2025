@@ -94,7 +94,11 @@ Once all three criteria are met, **Download completion record** produces a small
 
 See **Appendix C** for three delivery models, a worked flipped-classroom session plan, feedback structures, the six-domain rubric, standard-setting worksheets and a Kirkpatrick evaluation plan. See **Appendix B** for four branching simulation scenarios that run on a doll and printed vital-sign cards.
 
-## Learning loops (Vikkypaedia Standard v2 · module v1.5.0)
+## Engine v2.1 (module v1.6.0, 2026-09-24)
+
+This module now runs on the same shared engine as every other Vikkypaedia module. All module-specific values (Parts, cut score, certificate wording, placement text) live in `build/05_module.html`; `build/90_script.html`, `build/89_loops.js` and `build/06_loops.css` are identical across modules. Learner progress is kept (the storage key is unchanged). The version bump changes the certificate verification code for certificates issued from now on.
+
+## Learning loops (Vikkypaedia Standard v2.1 · module v1.6.0)
 
 Every loop is tied to mastery; nothing rewards clicking.
 

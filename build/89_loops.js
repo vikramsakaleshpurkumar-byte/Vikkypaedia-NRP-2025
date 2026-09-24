@@ -348,7 +348,18 @@ function renderLoops(){
   detectMoments();
   passportWrite();
 }
+/* ---- a one-time note for learners who used an earlier edition of this module ---- */
+function legacyNotice(){
+  try{
+    var keys = (window.VKP_MODULE && window.VKP_MODULE.legacyKeys) || [];
+    if (S.legacyNoted || !keys.some(function(k){ return localStorage.getItem(k) != null; })) return;
+    S.legacyNoted = true; save();
+    setTimeout(function(){ toast("Welcome to the new edition",
+      "This module was rebuilt to current guidelines. Earlier progress is not carried over, because the units and questions have changed. Experienced learners can clear Parts quickly by answering checkpoints cold.", "big"); }, 1200);
+  } catch(e){}
+}
 function wireLoops(){
+  legacyNotice();
   var d = $("#dueBtn"); if (d) d.addEventListener("click", openReview);
   var g = $("#nsGo");   if (g) g.addEventListener("click", function(){ if (NS_ACT) NS_ACT(); });
   $("#rvwClose").addEventListener("click", closeReview);

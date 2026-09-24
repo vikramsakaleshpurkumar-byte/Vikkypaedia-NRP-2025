@@ -1,0 +1,51 @@
+<script>
+/* Module configuration — the only engine-facing file that changes between Vikkypaedia modules. */
+window.VKP_MODULE = {
+  id: "nrp2025",
+  slug: "nrp2025",
+  title: "Neonatal Resuscitation 2025",
+  version: "1.6.0",
+  build: "2026-09-24",
+  storeKey: "vkp.nrp2025.v1",      // unchanged: existing learners keep their progress
+  legacyKeys: [],
+  codePrefix: "NR25",
+  safetyGate: false,
+  parts: [
+    { key:"A", units:[1,2,3,4] },
+    { key:"B", units:[5,6,7,8,9] },
+    { key:"C", units:[10,11,12,13,14] },
+    { key:"D", units:[15,16,17,18] },
+    { key:"E", units:[19,20,21,22,23,24] }
+  ],
+  defaults: {
+    cut: 90,            // per cent — provisional, faculty-configurable
+    items: 50,
+    minutes: 75,
+    attempts: 2,
+    lockHours: 24,
+    retainUnits: 18     // of 24 units must show ≥24 h retention
+  },
+  alignedTo: "aligned to the 2025 AHA/AAP neonatal resuscitation guidelines and ILCOR 2025 CoSTR",
+  certScopeLines: [
+    "This certificate attests knowledge and clinical reasoning demonstrated by written assessment in a self-paced module. It does not attest bedside",
+    "competence, confers no licence or clinical privilege, and is not a substitute for a supervised, hands-on neonatal resuscitation course. It is NOT the",
+    "Neonatal Resuscitation Program® and confers no NRP® provider status or eCard; NRP® is a registered trademark of the American Academy of Pediatrics.",
+    "No CME credit unless separately accredited. The verification code is deterministically re-derivable from the displayed figures — it is not tamper-proof."
+  ],
+  recordNote: "Not the Neonatal Resuscitation Program (NRP is a registered trademark of the American Academy of Pediatrics). Confers no provider status, eCard, licence or clinical privilege.",
+  scopes: {
+    e: { label:"Parts A–C · 14 units", hours:12 },
+    a: { label:"Parts A–D · 18 units", hours:20 },
+    x: { label:"All 24 units + appendices", hours:30 }
+  },
+  placement: {
+    paths: {
+      many: "You have given PPV before, so <b>clear Parts A and B by challenge</b>: open each unit, go straight to the two checkpoint questions and answer them cold. If you pass both, that unit is mastered and you move on. If you miss one, read the unit — that miss is exactly the gap worth finding. Nobody is skipped past a locked Part; you simply demonstrate mastery faster.",
+      some: "Read Part A quickly, then slow down from <b>Unit 10 onward</b>. Ventilation is where almost all newborn deaths are won or lost, and it is where partly-experienced clinicians most often carry a wrong habit.",
+      none: "Work through in order and do not rush Part C. Aim for <b>one unit per sitting</b> with the retention checks answered when they appear — that spacing is what makes it stick past the exam."
+    },
+    trackRc: "Your clinical panels now default to the <b>resource-constrained track</b> — self-inflating bag, no blender, no cardiac monitor. Switch to &lsquo;Both tracks&rsquo; in the toolbar whenever you want to see what the ideal setting would do and why.",
+    trackIdeal: "Your clinical panels default to the <b>ideal-setting track</b>. I would still read the resource-constrained panels at least once: you will refer to, receive from, or teach in those settings."
+  }
+};
+</script>

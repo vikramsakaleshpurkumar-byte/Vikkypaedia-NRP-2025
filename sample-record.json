@@ -1,0 +1,41 @@
+{
+  "format": "vikkypaedia-completion-record",
+  "formatVersion": 1,
+  "module": {
+    "id": "nrp2025",
+    "title": "Neonatal Resuscitation 2025",
+    "version": "1.6.0",
+    "build": "2026-09-24"
+  },
+  "learner": {
+    "name": "Dr Ananya Raghavan",
+    "institution": "District Hospital, Hassan",
+    "registration": "KMC 123456",
+    "email": "ananya@example.org",
+    "track": "Advanced",
+    "setting": "rc"
+  },
+  "enrolledAt": 1790261693848,
+  "issuedAt": 1790261698900,
+  "result": {
+    "unitsMastered": 24,
+    "unitsTotal": 24,
+    "checkpointsCorrect": 48,
+    "checkpointsTotal": 48,
+    "retentionUnits": 24,
+    "retentionRequired": 18,
+    "longestRetention": "2 days",
+    "bestScore": 96,
+    "cutScore": 90,
+    "attempts": 1,
+    "certified": true
+  },
+  "signatory": {
+    "name": "Dr Vikram Sakaleshpur Kumar",
+    "role": "Medical Educator"
+  },
+  "verificationCode": "NR25-04U2-WDW",
+  "attestation": "Self-attested. Generated on the learner's own device from local progress data. Re-derivable, not tamper-proof: treat it as a signed statement by the learner, not as proof issued by a third party.",
+  "scope": "Not the Neonatal Resuscitation Program (NRP is a registered trademark of the American Academy of Pediatrics). Confers no provider status, eCard, licence or clinical privilege.",
+  "checksum": "1XB3320"
+}

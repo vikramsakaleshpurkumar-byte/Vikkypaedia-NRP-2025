@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Assemble the single-file Vikkypaedia Neonatal Resuscitation 2025 module."""
+"""Assemble a single-file Vikkypaedia module (Standard engine v2.1)."""
+EXPECT_UNITS, EXPECT_ITEMS = 24, 48
 import os, re, sys
 
 B = os.path.join(os.path.dirname(os.path.abspath(__file__)), "build")
@@ -23,6 +24,8 @@ apps   = read("80_appendices.html")
 examjs = read("85_examitems.html")
 figjs  = read("88_figs.html")
 script = read("90_script.html")
+modjs  = read("05_module.html")
+assert "window.VKP_MODULE" in modjs, "05_module.html missing"
 loops_css = read("06_loops.css")
 loops_js  = read("89_loops.js")
 
@@ -40,7 +43,7 @@ shell = shell.replace("<!--UNITS-->", units)
 shell = shell.replace("<!--ASSESSMENT-->", assess)
 shell = shell.replace("<!--APPENDICES-->", apps)
 
-html = head + shell + examjs + figjs + script
+html = head + shell + modjs + examjs + figjs + script
 
 with open(OUT, "w", encoding="utf-8") as f:
     f.write(html)
@@ -49,15 +52,15 @@ with open(OUT, "w", encoding="utf-8") as f:
 errs, warns = [], []
 
 n_units = len(re.findall(r'<section class="unit"', html))
-if n_units != 24:
-    errs.append("unit count is %d, expected 24" % n_units)
+if n_units != EXPECT_UNITS:
+    errs.append("unit count is %d, expected %d" % (n_units, EXPECT_UNITS))
 
 qs = re.findall(r'<div class="q" data-q="([^"]+)"', html)
 if len(qs) != len(set(qs)):
     dup = [q for q in set(qs) if qs.count(q) > 1]
     errs.append("duplicate question ids: %s" % dup)
-if len(qs) != 48:
-    warns.append("checkpoint count is %d (expect 48 when complete)" % len(qs))
+if len(qs) != EXPECT_ITEMS:
+    errs.append("checkpoint count is %d, expected %d" % (len(qs), EXPECT_ITEMS))
 
 # one data-c="1" per question block
 for block in re.findall(r'<div class="q" data-q="([^"]+)".*?(?=<div class="q" data-q="|</section>)', html, re.S):
@@ -82,6 +85,13 @@ missing = sorted(r for r in refs if r not in ids and not r.startswith("part"))
 if missing:
     warns.append("script references ids not in HTML: %s" % missing)
 
+# every unit's data-part must match the Part map in 05_module.html
+_pm = {}
+for k, us in re.findall(r'key:"([A-E])",\s*units:\[([\d,\s]+)\]', modjs):
+    for u in us.split(","): _pm[int(u)] = k
+for u, part in re.findall(r'<section class="unit" id="u\d+" data-unit="(\d+)" data-part="([A-E])"', html):
+    if _pm.get(int(u)) != part:
+        errs.append("unit %s is in Part %s in the HTML but Part %s in 05_module.html" % (u, part, _pm.get(int(u))))
 opens = len(re.findall(r"<section", html)); closes = len(re.findall(r"</section>", html))
 if opens != closes:
     errs.append("section tags unbalanced: %d open, %d close" % (opens, closes))

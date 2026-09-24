@@ -83,6 +83,13 @@
 .burst i{position:absolute;width:9px;height:9px;border-radius:2px;background:var(--h);transform:rotate(var(--a)) translateY(0);animation:burst .9s ease-out forwards}
 @keyframes burst{to{transform:rotate(var(--a)) translateY(-120px) scale(.4);opacity:0}}
 
+/* role lenses (modules with more than one professional audience) */
+.box.roles{border:1px solid var(--line-2);border-left:3px solid var(--brand);background-color:var(--surface-2)}
+.box.roles h5{color:var(--brand-ink)}
+.box.roles ul{margin:0 0 .4em;padding-left:1.15em}
+.box.roles li{margin:.3em 0}
+.box.roles .roles-note{font-size:.8rem;color:var(--ink-2)}
+
 /* printable appendix */
 .printbtn{float:right;margin:0 0 .6em .8em}
 .printdoc{display:none}
@@ -99,3 +106,10 @@
   html.printing-doc .printdoc pre{white-space:pre-wrap;font-size:7.5pt}
   .toasthost,.rvw,.burst{display:none !important}
 }
+/* cross-module links */
+.box.deeper{border:1px solid var(--line-2);border-left:3px solid var(--blue, var(--brand));background-color:var(--surface-2)}
+.box.deeper h5{color:var(--brand-ink)}
+.box.deeper ul{margin:0 0 .4em;padding-left:1.15em}
+.box.deeper li{margin:.3em 0}
+.box.deeper a{color:var(--brand-ink);font-weight:600}
+.box.deeper .roles-note{font-size:.8rem;color:var(--ink-2)}
