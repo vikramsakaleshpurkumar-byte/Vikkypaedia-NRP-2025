@@ -4,7 +4,7 @@
   "module": {
     "id": "nrp2025",
     "title": "Neonatal Resuscitation 2025",
-    "version": "1.6.1",
+    "version": "1.7.0",
     "build": "2026-09-24"
   },
   "learner": {
@@ -15,8 +15,8 @@
     "track": "Advanced",
     "setting": "rc"
   },
-  "enrolledAt": 1790264067458,
-  "issuedAt": 1790264073644,
+  "enrolledAt": 1790267198064,
+  "issuedAt": 1790267206240,
   "result": {
     "unitsMastered": 24,
     "unitsTotal": 24,
@@ -34,10 +34,10 @@
     "name": "Dr Vikram Sakaleshpur Kumar",
     "role": "Medical Educator"
   },
-  "verificationCode": "NR25-0542-I2V",
+  "verificationCode": "NR25-0XDJ-2AJ",
   "attestation": "Self-attested. Generated on the learner's own device from local progress data. Re-derivable, not tamper-proof: treat it as a signed statement by the learner, not as proof issued by a third party.",
   "scope": "Not the Neonatal Resuscitation Program (NRP is a registered trademark of the American Academy of Pediatrics). Confers no provider status, eCard, licence or clinical privilege.",
-  "checksum": "1QG29BQ",
+  "checksum": "1L29OPP",
   "detail": {
     "units": [
       {
@@ -393,7 +393,7 @@
     },
     "exam": [
       {
-        "at": 1790264071982,
+        "at": 1790267203415,
         "pct": 96,
         "n": 50,
         "timedOut": false,
@@ -401,7 +401,8 @@
         "miss": {}
       }
     ],
-    "studyDays": 0
+    "studyDays": 0,
+    "megacodes": []
   },
-  "detailChecksum": "0OD0VT7"
+  "detailChecksum": "1Y3Q2KM"
 }

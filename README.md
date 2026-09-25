@@ -163,3 +163,12 @@ CC BY-NC-SA 4.0, **excluding** the *Vikkypaedia* name, the name and likeness of 
 ## Disclaimer
 
 Education, not a protocol, and not certification to practise. Verify every dose, threshold and device setting against your institution's current protocol and the manufacturer's instructions before use in a patient. Neonatal resuscitation guidance changes on roughly a five-year cycle — if you are reading this more than three years after the build date in the footer, assume something is out of date and check.
+
+## Interactive megacodes (engine v2.2)
+
+Six branching cases played one decision at a time against a patient monitor, in their own section before the final assessment. Each case opens when its Part opens. Wrong calls cost time or change the patient, critical errors (tenfold doses, a shock with a pulse, compressions before effective ventilation, and similar) are flagged, and every option is explained. Options are shuffled on every run. The debrief shows right decisions, critical errors, key times against targets, and links back to the units.
+
+- **Formative only.** Results are stored locally, appear in the completion record (`detail.megacodes`, covered by the detail checksum) and in the faculty class report on the hub. They are not a certification criterion.
+- **Authoring:** cases live in `megacodes/cases.py`. Every dose is taken from this module's drug annex (Appendix E) and worked out for the stated weight. Compile with `python megacodes/make.py`, which validates the graph (every node reachable, a correct option at every step, correct-only paths acyclic and ending well, only `<b>`/`<i>` markup) and writes `build/86_megacodes.html`. Then run `python build.py`.
+- The player (`build/87_megacode.js`) is shared by every Vikkypaedia module and does nothing in a module without cases.
+- Clinically reviewed against the 2025 AHA/AAP guidelines before release (2026-09-24). Re-review whenever the guidelines change.
